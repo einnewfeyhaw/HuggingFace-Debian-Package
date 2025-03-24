@@ -46,8 +46,6 @@ UNDOCUMENTED_PARAMETERS = {
 
 
 def check_method(method_name: str, method: Any):
-    if getattr(method, "__is_overload__", False):
-        return []
     input_type_name = "".join(part.capitalize() for part in method_name.split("_")) + "Input"
     if not hasattr(types, input_type_name):
         return [f"Missing input type for method {method_name}"]
@@ -100,7 +98,7 @@ for method_name, method in inspect.getmembers(InferenceClient, predicate=inspect
 
     logs = check_method(method_name, method)
     if len(logs) > 0:
-        # exit_code = 1
+        exit_code = 1
         all_logs.append(f"  ❌ {method_name}: errors found")
         all_logs.append("\n".join(" " * 4 + log for log in logs))
         continue

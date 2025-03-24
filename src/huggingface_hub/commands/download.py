@@ -55,15 +55,10 @@ class DownloadCommand(BaseHuggingfaceCLICommand):
     def register_subcommand(parser: _SubParsersAction):
         download_parser = parser.add_parser("download", help="Download files from the Hub")
         download_parser.add_argument(
-            "repo_id",
-            type=str,
-            help="ID of the repo to download from (e.g. `username/repo-name`).",
+            "repo_id", type=str, help="ID of the repo to download from (e.g. `username/repo-name`)."
         )
         download_parser.add_argument(
-            "filenames",
-            type=str,
-            nargs="*",
-            help="Files to download (e.g. `config.json`, `data/metadata.jsonl`).",
+            "filenames", type=str, nargs="*", help="Files to download (e.g. `config.json`, `data/metadata.jsonl`)."
         )
         download_parser.add_argument(
             "--repo-type",
@@ -77,21 +72,13 @@ class DownloadCommand(BaseHuggingfaceCLICommand):
             help="An optional Git revision id which can be a branch name, a tag, or a commit hash.",
         )
         download_parser.add_argument(
-            "--include",
-            nargs="*",
-            type=str,
-            help="Glob patterns to match files to download.",
+            "--include", nargs="*", type=str, help="Glob patterns to match files to download."
         )
         download_parser.add_argument(
-            "--exclude",
-            nargs="*",
-            type=str,
-            help="Glob patterns to exclude from files to download.",
+            "--exclude", nargs="*", type=str, help="Glob patterns to exclude from files to download."
         )
         download_parser.add_argument(
-            "--cache-dir",
-            type=str,
-            help="Path to the directory where to save the downloaded files.",
+            "--cache-dir", type=str, help="Path to the directory where to save the downloaded files."
         )
         download_parser.add_argument(
             "--local-dir",
@@ -118,9 +105,7 @@ class DownloadCommand(BaseHuggingfaceCLICommand):
             help="Deprecated and ignored. Downloading a file to local dir always attempts to resume previously interrupted downloads (unless hf-transfer is enabled).",
         )
         download_parser.add_argument(
-            "--token",
-            type=str,
-            help="A User Access Token generated from https://huggingface.co/settings/tokens",
+            "--token", type=str, help="A User Access Token generated from https://huggingface.co/settings/tokens"
         )
         download_parser.add_argument(
             "--quiet",

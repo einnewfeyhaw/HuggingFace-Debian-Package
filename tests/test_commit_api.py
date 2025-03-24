@@ -44,10 +44,7 @@ class TestCommitOperationPathInRepo(unittest.TestCase):
     def test_path_in_repo_valid(self) -> None:
         for input, expected in self.valid_values.items():
             with self.subTest(f"Testing with valid input: '{input}'"):
-                self.assertEqual(
-                    CommitOperationAdd(path_in_repo=input, path_or_fileobj=b"").path_in_repo,
-                    expected,
-                )
+                self.assertEqual(CommitOperationAdd(path_in_repo=input, path_or_fileobj=b"").path_in_repo, expected)
                 self.assertEqual(CommitOperationDelete(path_in_repo=input).path_in_repo, expected)
 
     def test_path_in_repo_invalid(self) -> None:

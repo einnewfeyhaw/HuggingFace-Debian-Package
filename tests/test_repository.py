@@ -112,10 +112,7 @@ class TestRepositoryShared(RepositoryTestAbstract):
     @expect_deprecation("Repository")
     def test_clone_from_not_hf_url(self):
         # Should not error out
-        Repository(
-            self.repo_path,
-            clone_from="https://hf.co/hf-internal-testing/huggingface-hub-dummy-repository",
-        )
+        Repository(self.repo_path, clone_from="https://hf.co/hf-internal-testing/huggingface-hub-dummy-repository")
 
     @expect_deprecation("Repository")
     def test_clone_from_missing_repo(self):
@@ -131,11 +128,7 @@ class TestRepositoryShared(RepositoryTestAbstract):
     @expect_deprecation("Repository")
     @with_production_testing
     def test_clone_from_prod_canonical_repo_url(self):
-        Repository(
-            self.repo_path,
-            clone_from="https://huggingface.co/bert-base-cased",
-            skip_lfs_files=True,
-        )
+        Repository(self.repo_path, clone_from="https://huggingface.co/bert-base-cased", skip_lfs_files=True)
 
     @expect_deprecation("Repository")
     def test_init_from_existing_local_clone(self):
@@ -216,9 +209,7 @@ class TestRepositoryUniqueRepos(RepositoryTestAbstract):
         self.repo_url = self._api.create_repo(repo_id=repo_name())
         self.repo_id = self.repo_url.repo_id
         self._api.upload_file(
-            path_or_fileobj=self.binary_content.encode(),
-            path_in_repo="random_file.txt",
-            repo_id=self.repo_id,
+            path_or_fileobj=self.binary_content.encode(), path_in_repo="random_file.txt", repo_id=self.repo_id
         )
 
     def tearDown(self):
@@ -254,9 +245,7 @@ class TestRepositoryUniqueRepos(RepositoryTestAbstract):
 
         # Add to the remote repository without doing anything to the local repository.
         self._api.upload_file(
-            path_or_fileobj=self.binary_content.encode(),
-            path_in_repo="random_file_3.txt",
-            repo_id=self.repo_id,
+            path_or_fileobj=self.binary_content.encode(), path_in_repo="random_file_3.txt", repo_id=self.repo_id
         )
 
         # Cloning the repository in the same directory should not result in a git pull.
@@ -817,12 +806,7 @@ class TestRepositoryOffline(RepositoryTestAbstract):
 
     @expect_deprecation("Repository")
     def test_repo_passed_user(self):
-        _ = Repository(
-            self.repo_path,
-            token=TOKEN,
-            git_user="RANDOM_USER",
-            git_email="EMAIL@EMAIL.EMAIL",
-        )
+        _ = Repository(self.repo_path, token=TOKEN, git_user="RANDOM_USER", git_email="EMAIL@EMAIL.EMAIL")
         username = run_subprocess("git config user.name", folder=self.repo_path).stdout
         email = run_subprocess("git config user.email", folder=self.repo_path).stdout
 
@@ -876,33 +860,20 @@ class TestRepositoryDataset(RepositoryTestAbstract):
     @expect_deprecation("Repository")
     def test_clone_dataset_with_endpoint_explicit_repo_type(self):
         Repository(
-            self.repo_path,
-            clone_from=self.repo_url,
-            repo_type="dataset",
-            git_user="ci",
-            git_email="ci@dummy.com",
+            self.repo_path, clone_from=self.repo_url, repo_type="dataset", git_user="ci", git_email="ci@dummy.com"
         )
         self.assertTrue((self.repo_path / "file.txt").exists())
 
     @expect_deprecation("Repository")
     def test_clone_dataset_with_endpoint_implicit_repo_type(self):
         self.assertIn("dataset", self.repo_url)  # Implicit
-        Repository(
-            self.repo_path,
-            clone_from=self.repo_url,
-            git_user="ci",
-            git_email="ci@dummy.com",
-        )
+        Repository(self.repo_path, clone_from=self.repo_url, git_user="ci", git_email="ci@dummy.com")
         self.assertTrue((self.repo_path / "file.txt").exists())
 
     @expect_deprecation("Repository")
     def test_clone_dataset_with_repo_id_and_repo_type(self):
         Repository(
-            self.repo_path,
-            clone_from=self.repo_id,
-            repo_type="dataset",
-            git_user="ci",
-            git_email="ci@dummy.com",
+            self.repo_path, clone_from=self.repo_id, repo_type="dataset", git_user="ci", git_email="ci@dummy.com"
         )
         self.assertTrue((self.repo_path / "file.txt").exists())
 

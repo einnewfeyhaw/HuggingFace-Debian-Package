@@ -49,12 +49,7 @@ from huggingface_hub.errors import (
     ValidationError,
 )
 
-from ..utils import (
-    get_session,
-    is_aiohttp_available,
-    is_numpy_available,
-    is_pillow_available,
-)
+from ..utils import get_session, is_aiohttp_available, is_numpy_available, is_pillow_available
 from ._generated.types import ChatCompletionStreamOutput, TextGenerationStreamOutput
 
 
@@ -154,21 +149,17 @@ def _import_pil_image():
 @overload
 def _open_as_binary(
     content: ContentT,
-) -> ContextManager[BinaryT]:
-    ...  # means "if input is not None, output is not None"
+) -> ContextManager[BinaryT]: ...  # means "if input is not None, output is not None"
 
 
 @overload
 def _open_as_binary(
     content: Literal[None],
-) -> ContextManager[Literal[None]]:
-    ...  # means "if input is None, output is None"
+) -> ContextManager[Literal[None]]: ...  # means "if input is None, output is None"
 
 
 @contextmanager  # type: ignore
-def _open_as_binary(
-    content: Optional[ContentT],
-) -> Generator[Optional[BinaryT], None, None]:
+def _open_as_binary(content: Optional[ContentT]) -> Generator[Optional[BinaryT], None, None]:
     """Open `content` as a binary file, either from a URL, a local path, or raw bytes.
 
     Do nothing if `content` is None,

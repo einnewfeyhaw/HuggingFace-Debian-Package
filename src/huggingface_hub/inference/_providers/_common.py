@@ -82,14 +82,7 @@ class TaskProviderHelper:
             raise ValueError("Both payload and data cannot be set in the same request.")
         if payload is None and data is None:
             raise ValueError("Either payload or data must be set in the request.")
-        return RequestParameters(
-            url=url,
-            task=self.task,
-            model=mapped_model,
-            json=payload,
-            data=data,
-            headers=headers,
-        )
+        return RequestParameters(url=url, task=self.task, model=mapped_model, json=payload, data=data, headers=headers)
 
     def get_response(self, response: Union[bytes, Dict]) -> Any:
         """
@@ -180,11 +173,7 @@ class TaskProviderHelper:
         return None
 
     def _prepare_payload_as_bytes(
-        self,
-        inputs: Any,
-        parameters: Dict,
-        mapped_model: str,
-        extra_payload: Optional[Dict],
+        self, inputs: Any, parameters: Dict, mapped_model: str, extra_payload: Optional[Dict]
     ) -> Optional[bytes]:
         """Return the body to use for the request, as bytes.
 
@@ -244,11 +233,9 @@ def recursive_merge(dict1: Dict, dict2: Dict) -> Dict:
     return {
         **dict1,
         **{
-            key: (
-                recursive_merge(dict1[key], value)
-                if (key in dict1 and isinstance(dict1[key], dict) and isinstance(value, dict))
-                else value
-            )
+            key: recursive_merge(dict1[key], value)
+            if (key in dict1 and isinstance(dict1[key], dict) and isinstance(value, dict))
+            else value
             for key, value in dict2.items()
         },
     }

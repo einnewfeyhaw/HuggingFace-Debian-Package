@@ -15,11 +15,7 @@ POLLING_INTERVAL = 1.0
 
 class BlackForestLabsTextToImageTask(TaskProviderHelper):
     def __init__(self):
-        super().__init__(
-            provider="black-forest-labs",
-            base_url="https://api.us1.bfl.ai/v1",
-            task="text-to-image",
-        )
+        super().__init__(provider="black-forest-labs", base_url="https://api.us1.bfl.ai/v1", task="text-to-image")
 
     def _prepare_headers(self, headers: Dict, api_key: str) -> Dict:
         headers = super()._prepare_headers(headers, api_key)

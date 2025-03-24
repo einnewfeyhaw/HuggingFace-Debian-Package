@@ -49,11 +49,7 @@ from ._chunk_utils import chunk_iterable
 from ._datetime import parse_datetime
 from ._experimental import experimental
 from ._fixes import SoftTemporaryDirectory, WeakFileLock, yaml_dump
-from ._git_credential import (
-    list_credential_helpers,
-    set_git_credential,
-    unset_git_credential,
-)
+from ._git_credential import list_credential_helpers, set_git_credential, unset_git_credential
 from ._headers import build_hf_headers, get_token_to_send
 from ._hf_folder import HfFolder
 from ._http import (
@@ -110,15 +106,5 @@ from ._safetensors import SafetensorsFileMetadata, SafetensorsRepoMetadata, Tens
 from ._subprocess import capture_output, run_interactive_subprocess, run_subprocess
 from ._telemetry import send_telemetry
 from ._typing import is_jsonable, is_simple_optional_type, unwrap_simple_optional_type
-from ._validators import (
-    smoothly_deprecate_use_auth_token,
-    validate_hf_hub_args,
-    validate_repo_id,
-)
-from .tqdm import (
-    are_progress_bars_disabled,
-    disable_progress_bars,
-    enable_progress_bars,
-    tqdm,
-    tqdm_stream_file,
-)
+from ._validators import smoothly_deprecate_use_auth_token, validate_hf_hub_args, validate_repo_id
+from .tqdm import are_progress_bars_disabled, disable_progress_bars, enable_progress_bars, tqdm, tqdm_stream_file

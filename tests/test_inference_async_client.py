@@ -42,16 +42,10 @@ from huggingface_hub import (
     InferenceTimeoutError,
     TextGenerationOutputPrefillToken,
 )
-from huggingface_hub.inference._common import (
-    ValidationError as TextGenerationValidationError,
-)
+from huggingface_hub.inference._common import ValidationError as TextGenerationValidationError
 from huggingface_hub.inference._common import _get_unsupported_text_generation_kwargs
 
-from .test_inference_client import (
-    CHAT_COMPLETE_NON_TGI_MODEL,
-    CHAT_COMPLETION_MESSAGES,
-    CHAT_COMPLETION_MODEL,
-)
+from .test_inference_client import CHAT_COMPLETE_NON_TGI_MODEL, CHAT_COMPLETION_MESSAGES, CHAT_COMPLETION_MODEL
 from .testing_utils import with_production_testing
 
 
@@ -97,12 +91,7 @@ async def test_async_generate_with_details(tgi_client: AsyncInferenceClient) -> 
 @with_production_testing
 async def test_async_generate_best_of(tgi_client: AsyncInferenceClient) -> None:
     response = await tgi_client.text_generation(
-        "test",
-        max_new_tokens=1,
-        best_of=2,
-        do_sample=True,
-        decoder_input_details=True,
-        details=True,
+        "test", max_new_tokens=1, best_of=2, do_sample=True, decoder_input_details=True, details=True
     )
 
     assert response.details.seed is not None
@@ -114,9 +103,7 @@ async def test_async_generate_best_of(tgi_client: AsyncInferenceClient) -> None:
 @pytest.mark.vcr
 @pytest.mark.asyncio
 @with_production_testing
-async def test_async_generate_validation_error(
-    tgi_client: AsyncInferenceClient,
-) -> None:
+async def test_async_generate_validation_error(tgi_client: AsyncInferenceClient) -> None:
     with pytest.raises(TextGenerationValidationError):
         await tgi_client.text_generation("test", max_new_tokens=10_000)
 
@@ -124,17 +111,10 @@ async def test_async_generate_validation_error(
 @pytest.mark.vcr
 @pytest.mark.asyncio
 @pytest.mark.skip("skipping this test, as InferenceAPI seems to not throw an error when sending unsupported params")
-async def test_async_generate_non_tgi_endpoint(
-    tgi_client: AsyncInferenceClient,
-) -> None:
+async def test_async_generate_non_tgi_endpoint(tgi_client: AsyncInferenceClient) -> None:
     text = await tgi_client.text_generation("0 1 2", model="gpt2", max_new_tokens=10)
     assert text == " 3 4 5 6 7 8 9 10 11 12"
-    assert _get_unsupported_text_generation_kwargs("gpt2") == [
-        "details",
-        "stop",
-        "watermark",
-        "decoder_input_details",
-    ]
+    assert _get_unsupported_text_generation_kwargs("gpt2") == ["details", "stop", "watermark", "decoder_input_details"]
 
     # Watermark is ignored (+ warning)
     with pytest.warns(UserWarning):
@@ -153,9 +133,7 @@ async def test_async_generate_non_tgi_endpoint(
 @pytest.mark.vcr
 @pytest.mark.asyncio
 @with_production_testing
-async def test_async_generate_stream_no_details(
-    tgi_client: AsyncInferenceClient,
-) -> None:
+async def test_async_generate_stream_no_details(tgi_client: AsyncInferenceClient) -> None:
     responses = [
         response async for response in await tgi_client.text_generation("test", max_new_tokens=1, stream=True)
     ]
@@ -170,9 +148,7 @@ async def test_async_generate_stream_no_details(
 @pytest.mark.vcr
 @pytest.mark.asyncio
 @with_production_testing
-async def test_async_generate_stream_with_details(
-    tgi_client: AsyncInferenceClient,
-) -> None:
+async def test_async_generate_stream_with_details(tgi_client: AsyncInferenceClient) -> None:
     responses = [
         response
         async for response in await tgi_client.text_generation("test", max_new_tokens=1, stream=True, details=True)
@@ -226,9 +202,7 @@ async def test_async_chat_completion_not_tgi_no_stream() -> None:
                 finish_reason="length",
                 index=0,
                 message=ChatCompletionOutputMessage(
-                    role="assistant",
-                    content="Deep learning isn't even an algorithm though.",
-                    tool_calls=None,
+                    role="assistant", content="Deep learning isn't even an algorithm though.", tool_calls=None
                 ),
                 logprobs=None,
             )

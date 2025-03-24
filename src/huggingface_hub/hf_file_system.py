@@ -123,38 +123,17 @@ class HfFileSystem(fsspec.AbstractFileSystem):
         if (repo_type, repo_id, revision) not in self._repo_and_revision_exists_cache:
             try:
                 self._api.repo_info(
-                    repo_id,
-                    revision=revision,
-                    repo_type=repo_type,
-                    timeout=constants.HF_HUB_ETAG_TIMEOUT,
+                    repo_id, revision=revision, repo_type=repo_type, timeout=constants.HF_HUB_ETAG_TIMEOUT
                 )
             except (RepositoryNotFoundError, HFValidationError) as e:
-                self._repo_and_revision_exists_cache[(repo_type, repo_id, revision)] = (
-                    False,
-                    e,
-                )
-                self._repo_and_revision_exists_cache[(repo_type, repo_id, None)] = (
-                    False,
-                    e,
-                )
+                self._repo_and_revision_exists_cache[(repo_type, repo_id, revision)] = False, e
+                self._repo_and_revision_exists_cache[(repo_type, repo_id, None)] = False, e
             except RevisionNotFoundError as e:
-                self._repo_and_revision_exists_cache[(repo_type, repo_id, revision)] = (
-                    False,
-                    e,
-                )
-                self._repo_and_revision_exists_cache[(repo_type, repo_id, None)] = (
-                    True,
-                    None,
-                )
+                self._repo_and_revision_exists_cache[(repo_type, repo_id, revision)] = False, e
+                self._repo_and_revision_exists_cache[(repo_type, repo_id, None)] = True, None
             else:
-                self._repo_and_revision_exists_cache[(repo_type, repo_id, revision)] = (
-                    True,
-                    None,
-                )
-                self._repo_and_revision_exists_cache[(repo_type, repo_id, None)] = (
-                    True,
-                    None,
-                )
+                self._repo_and_revision_exists_cache[(repo_type, repo_id, revision)] = True, None
+                self._repo_and_revision_exists_cache[(repo_type, repo_id, None)] = True, None
         return self._repo_and_revision_exists_cache[(repo_type, repo_id, revision)]
 
     def resolve_path(self, path: str, revision: Optional[str] = None) -> HfFileSystemResolvedPath:
@@ -277,12 +256,7 @@ class HfFileSystem(fsspec.AbstractFileSystem):
             if not resolved_path.path_in_repo:
                 self._repo_and_revision_exists_cache.pop((resolved_path.repo_type, resolved_path.repo_id, None), None)
                 self._repo_and_revision_exists_cache.pop(
-                    (
-                        resolved_path.repo_type,
-                        resolved_path.repo_id,
-                        resolved_path.revision,
-                    ),
-                    None,
+                    (resolved_path.repo_type, resolved_path.repo_id, resolved_path.revision), None
                 )
 
     def _open(
@@ -296,23 +270,9 @@ class HfFileSystem(fsspec.AbstractFileSystem):
         if "a" in mode:
             raise NotImplementedError("Appending to remote files is not yet supported.")
         if block_size == 0:
-            return HfFileSystemStreamFile(
-                self,
-                path,
-                mode=mode,
-                revision=revision,
-                block_size=block_size,
-                **kwargs,
-            )
+            return HfFileSystemStreamFile(self, path, mode=mode, revision=revision, block_size=block_size, **kwargs)
         else:
-            return HfFileSystemFile(
-                self,
-                path,
-                mode=mode,
-                revision=revision,
-                block_size=block_size,
-                **kwargs,
-            )
+            return HfFileSystemFile(self, path, mode=mode, revision=revision, block_size=block_size, **kwargs)
 
     def _rm(self, path: str, revision: Optional[str] = None, **kwargs) -> None:
         resolved_path = self.resolve_path(path, revision=revision)
@@ -377,12 +337,7 @@ class HfFileSystem(fsspec.AbstractFileSystem):
         self.invalidate_cache(path=resolved_path.unresolve())
 
     def ls(
-        self,
-        path: str,
-        detail: bool = True,
-        refresh: bool = False,
-        revision: Optional[str] = None,
-        **kwargs,
+        self, path: str, detail: bool = True, refresh: bool = False, revision: Optional[str] = None, **kwargs
     ) -> List[Union[str, Dict[str, Any]]]:
         """
         List the contents of a directory.
@@ -599,25 +554,13 @@ class HfFileSystem(fsspec.AbstractFileSystem):
         """
         if maxdepth:
             return super().find(
-                path,
-                maxdepth=maxdepth,
-                withdirs=withdirs,
-                detail=detail,
-                refresh=refresh,
-                revision=revision,
-                **kwargs,
+                path, maxdepth=maxdepth, withdirs=withdirs, detail=detail, refresh=refresh, revision=revision, **kwargs
             )
         resolved_path = self.resolve_path(path, revision=revision)
         path = resolved_path.unresolve()
         kwargs = {"expand_info": detail, **kwargs}
         try:
-            out = self._ls_tree(
-                path,
-                recursive=True,
-                refresh=refresh,
-                revision=resolved_path.revision,
-                **kwargs,
-            )
+            out = self._ls_tree(path, recursive=True, refresh=refresh, revision=resolved_path.revision, **kwargs)
         except EntryNotFoundError:
             # Path could be a file
             if self.info(path, revision=revision, **kwargs)["type"] == "file":
@@ -751,17 +694,13 @@ class HfFileSystem(fsspec.AbstractFileSystem):
             }
             if expand_info:
                 last_commit = self._api.list_repo_commits(
-                    resolved_path.repo_id,
-                    repo_type=resolved_path.repo_type,
-                    revision=resolved_path.revision,
+                    resolved_path.repo_id, repo_type=resolved_path.repo_type, revision=resolved_path.revision
                 )[-1]
                 out = {
                     **out,
                     "tree_id": None,  # TODO: tree_id of the root directory?
                     "last_commit": LastCommitInfo(
-                        oid=last_commit.commit_id,
-                        title=last_commit.title,
-                        date=last_commit.created_at,
+                        oid=last_commit.commit_id, title=last_commit.title, date=last_commit.created_at
                     ),
                 }
         else:
@@ -1104,12 +1043,7 @@ class HfFileSystemStreamFile(fsspec.spec.AbstractBufferedFile):
         # avoid an unnecessary .info() call to instantiate .details
         self.details = {"name": self.resolved_path.unresolve(), "size": None}
         super().__init__(
-            fs,
-            self.resolved_path.unresolve(),
-            mode=mode,
-            block_size=block_size,
-            cache_type=cache_type,
-            **kwargs,
+            fs, self.resolved_path.unresolve(), mode=mode, block_size=block_size, cache_type=cache_type, **kwargs
         )
         self.response: Optional[Response] = None
         self.fs: HfFileSystem
@@ -1156,10 +1090,7 @@ class HfFileSystemStreamFile(fsspec.spec.AbstractBufferedFile):
             self.response = http_backoff(
                 "GET",
                 url,
-                headers={
-                    "Range": "bytes=%d-" % self.loc,
-                    **self.fs._api._build_hf_headers(),
-                },
+                headers={"Range": "bytes=%d-" % self.loc, **self.fs._api._build_hf_headers()},
                 retry_on_status_codes=(500, 502, 503, 504),
                 stream=True,
                 timeout=constants.HF_HUB_DOWNLOAD_TIMEOUT,

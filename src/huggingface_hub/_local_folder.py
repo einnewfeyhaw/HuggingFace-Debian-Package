@@ -258,10 +258,7 @@ def get_local_upload_paths(local_dir: Path, filename: str) -> LocalUploadFilePat
     file_path.parent.mkdir(parents=True, exist_ok=True)
     metadata_path.parent.mkdir(parents=True, exist_ok=True)
     return LocalUploadFilePaths(
-        path_in_repo=filename,
-        file_path=file_path,
-        lock_path=lock_path,
-        metadata_path=metadata_path,
+        path_in_repo=filename, file_path=file_path, lock_path=lock_path, metadata_path=metadata_path
     )
 
 
