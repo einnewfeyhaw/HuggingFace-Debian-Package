@@ -1,0 +1,48 @@
+Description: <short summary of the patch>
+ TODO: Put a short summary on the line above and replace this paragraph
+ with a longer explanation of this change. Complete the meta-information
+ with other relevant fields (see below for details). To make it easier, the
+ information below has been extracted from the changelog. Adjust it or drop
+ it.
+ .
+ python3-huggingface-hub (0.29.3-1) UNRELEASED; urgency=medium
+ .
+   * Initial release. (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+Author: anudeep <anudeep@unknown>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout https://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: (upstream|backport|vendor|other), (<patch-url>|commit:<commit-id>)
+Bug: <upstream-bugtracker-url>
+Bug-Debian: https://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: (no|not-needed|<patch-forwarded-url>)
+Applied-Upstream: <version>, (<commit-url>|commit:<commid-id>)
+Reviewed-By: <name and email of someone who approved/reviewed the patch>
+Last-Update: 2025-03-24
+
+--- python3-huggingface-hub-0.29.3.orig/.pytest_cache/v/cache/lastfailed
++++ python3-huggingface-hub-0.29.3/.pytest_cache/v/cache/lastfailed
+@@ -377,5 +377,6 @@
+   "tests/test_dduf.py::TestReadDDUFFile::test_read_dduf_file": true,
+   "tests/test_dduf.py::TestReadDDUFFile::test_model_index_required": true,
+   "tests/test_command_delete_cache.py::TestDeleteCacheHelpers": true,
+-  "tests/test_command_delete_cache.py::TestMockedDeleteCacheCommand": true
++  "tests/test_command_delete_cache.py::TestMockedDeleteCacheCommand": true,
++  "tests/test_command_delete_cache.py": true
+ }
+\ No newline at end of file
+--- python3-huggingface-hub-0.29.3.orig/Makefile
++++ python3-huggingface-hub-0.29.3/Makefile
+@@ -37,7 +37,7 @@ repocard:
+ 
+ 
+ test:
+-	PYTHONPATH=$(CURDIR)/src pytest ./tests/
++	PYTHONPATH=$(CURDIR)/src pytest -v ./tests/
+ 
+ # Taken from https://stackoverflow.com/a/12110773
+ # Commands:
