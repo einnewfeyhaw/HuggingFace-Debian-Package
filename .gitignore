@@ -140,3 +140,4 @@ dmypy.json
 cspell.json
 
 tmp*
+.ruff_cache/
