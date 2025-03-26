@@ -1,5 +1,5 @@
 python3-huggingface-hub (0.29.3-1) UNRELEASED; urgency=medium
 
-  * Initial release.
+  * Initial release. (Closes: #nnnn)  <nnnn is the bug number of your ITP>
 
  -- anudeep <f20212776@goa.bits-pilani.ac.in>  Mon, 24 Mar 2025 13:57:36 +0000
