@@ -248,16 +248,10 @@ class ModelCardDataTest(unittest.TestCase):
         as_dict = as_obj.to_dict()
 
         assert as_obj.tags == ["tag1", None]
-        assert as_dict["tags"] == [
-            "tag1",
-            None,
-        ]  # none value inside list should be kept
+        assert as_dict["tags"] == ["tag1", None]  # none value inside list should be kept
 
         assert as_obj.foo == {"bar": 3, "baz": None}
-        assert as_dict["foo"] == {
-            "bar": 3,
-            "baz": None,
-        }  # none value inside dict should be kept
+        assert as_dict["foo"] == {"bar": 3, "baz": None}  # none value inside dict should be kept
 
         assert as_obj.pipeline_tag is None
         assert "pipeline_tag" not in as_dict  # top level none value should be removed

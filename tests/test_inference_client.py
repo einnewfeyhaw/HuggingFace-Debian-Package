@@ -283,10 +283,7 @@ class TestBase:
         def mock_fetch():
             return _RECOMMENDED_MODELS_FOR_VCR["hf-inference"]
 
-        monkeypatch.setattr(
-            "huggingface_hub.inference._providers.hf_inference._fetch_recommended_models",
-            mock_fetch,
-        )
+        monkeypatch.setattr("huggingface_hub.inference._providers.hf_inference._fetch_recommended_models", mock_fetch)
 
 
 @pytest.mark.vcr
@@ -384,10 +381,7 @@ class TestInferenceClient(TestBase):
         tool_call = output.message.tool_calls[0]
         assert tool_call.type == "function"
         # Since tool_choice="auto", we can't know which tool will be called
-        assert tool_call.function.name in [
-            "get_n_day_weather_forecast",
-            "get_current_weather",
-        ]
+        assert tool_call.function.name in ["get_n_day_weather_forecast", "get_current_weather"]
         args = tool_call.function.arguments
         if isinstance(args, str):
             args = json.loads(args)
@@ -657,10 +651,7 @@ class TestInferenceClient(TestBase):
         query = "How many stars does the transformers repository have?"
         output = client.table_question_answering(query=query, table=table)
         assert output == TableQuestionAnsweringOutputElement(
-            answer="AVERAGE > 36542",
-            cells=["36542"],
-            coordinates=[[0, 1]],
-            aggregator="AVERAGE",
+            answer="AVERAGE > 36542", cells=["36542"], coordinates=[[0, 1]], aggregator="AVERAGE"
         )
 
     @pytest.mark.parametrize("client", list_clients("text-classification"), indirect=True)
@@ -700,44 +691,25 @@ class TestInferenceClient(TestBase):
     @pytest.mark.parametrize("client", list_clients("translation"), indirect=True)
     def test_translation_with_source_and_target_language(self, client: InferenceClient):
         output_with_langs = client.translation(
-            "Hello world",
-            model="facebook/mbart-large-50-many-to-many-mmt",
-            src_lang="en_XX",
-            tgt_lang="fr_XX",
+            "Hello world", model="facebook/mbart-large-50-many-to-many-mmt", src_lang="en_XX", tgt_lang="fr_XX"
         )
         assert isinstance(output_with_langs, TranslationOutput)
 
         with pytest.raises(ValueError):
-            client.translation(
-                "Hello world",
-                model="facebook/mbart-large-50-many-to-many-mmt",
-                src_lang="en_XX",
-            )
+            client.translation("Hello world", model="facebook/mbart-large-50-many-to-many-mmt", src_lang="en_XX")
 
         with pytest.raises(ValueError):
-            client.translation(
-                "Hello world",
-                model="facebook/mbart-large-50-many-to-many-mmt",
-                tgt_lang="en_XX",
-            )
+            client.translation("Hello world", model="facebook/mbart-large-50-many-to-many-mmt", tgt_lang="en_XX")
 
     @pytest.mark.parametrize("client", list_clients("token-classification"), indirect=True)
     def test_token_classification(self, client: InferenceClient):
         output = client.token_classification(text="My name is Sarah Jessica Parker but you can call me Jessica")
         assert output == [
             TokenClassificationOutputElement(
-                score=0.9991335868835449,
-                end=31,
-                entity_group="PER",
-                start=11,
-                word="Sarah Jessica Parker",
+                score=0.9991335868835449, end=31, entity_group="PER", start=11, word="Sarah Jessica Parker"
             ),
             TokenClassificationOutputElement(
-                score=0.9979913234710693,
-                end=59,
-                entity_group="PER",
-                start=52,
-                word="Jessica",
+                score=0.9979913234710693, end=59, entity_group="PER", start=52, word="Jessica"
             ),
         ]
 
@@ -758,13 +730,7 @@ class TestInferenceClient(TestBase):
             "A new model offers an explanation for how the Galilean satellites formed around the solar system's"
             "largest world. Konstantin Batygin did not set out to solve one of the solar system's most puzzling"
             " mysteries when he went for a run up a hill in Nice, France.",
-            candidate_labels=[
-                "space & cosmos",
-                "scientific discovery",
-                "microbiology",
-                "robots",
-                "archeology",
-            ],
+            candidate_labels=["space & cosmos", "scientific discovery", "microbiology", "robots", "archeology"],
         )
         assert output == [
             ZeroShotClassificationOutputElement(label="scientific discovery", score=0.796166181564331),
@@ -780,13 +746,7 @@ class TestInferenceClient(TestBase):
             text="A new model offers an explanation for how the Galilean satellites formed around the solar system's"
             "largest world. Konstantin Batygin did not set out to solve one of the solar system's most puzzling"
             " mysteries when he went for a run up a hill in Nice, France.",
-            candidate_labels=[
-                "space & cosmos",
-                "scientific discovery",
-                "microbiology",
-                "robots",
-                "archeology",
-            ],
+            candidate_labels=["space & cosmos", "scientific discovery", "microbiology", "robots", "archeology"],
             multi_label=True,
         )
         assert output == [
@@ -856,9 +816,7 @@ class TestHeadersAndCookies(TestBase):
     def test_mocked_post(self, get_session_mock: MagicMock) -> None:
         """Test that headers and cookies are correctly passed to the request."""
         client = InferenceClient(
-            headers={"X-My-Header": "foo"},
-            cookies={"my-cookie": "bar"},
-            proxies="custom proxies",
+            headers={"X-My-Header": "foo"}, cookies={"my-cookie": "bar"}, proxies="custom proxies"
         )
         response = client.post(data=b"content", model="username/repo_name", task="text-classification")
         assert response == get_session_mock().post.return_value.content
@@ -1002,10 +960,7 @@ class TestOpenAICompatibility(TestBase):
 
     def test_model_and_base_url_mutually_exclusive(self):
         with pytest.raises(ValueError):
-            InferenceClient(
-                model="meta-llama/Meta-Llama-3-8B-Instruct",
-                base_url="http://127.0.0.1:8000",
-            )
+            InferenceClient(model="meta-llama/Meta-Llama-3-8B-Instruct", base_url="http://127.0.0.1:8000")
 
 
 @pytest.mark.parametrize(
@@ -1070,9 +1025,7 @@ def test_chat_completion_error_in_stream():
 
 
 INFERENCE_API_URL = "https://api-inference.huggingface.co/models"
-INFERENCE_ENDPOINT_URL = (
-    "https://rur2d6yoccusjxgn.us-east-1.aws.endpoints.huggingface.cloud"  # example
-)
+INFERENCE_ENDPOINT_URL = "https://rur2d6yoccusjxgn.us-east-1.aws.endpoints.huggingface.cloud"  # example
 LOCAL_TGI_URL = "http://0.0.0.0:8080"
 
 
@@ -1120,10 +1073,6 @@ def test_pass_url_as_base_url():
     client = InferenceClient(base_url="http://localhost:8082/v1/")
     provider = get_provider_helper("hf-inference", "text-generation")
     request = provider.prepare_request(
-        inputs="The huggingface_hub library is ",
-        parameters={},
-        headers={},
-        model=client.model,
-        api_key=None,
+        inputs="The huggingface_hub library is ", parameters={}, headers={}, model=client.model, api_key=None
     )
     assert request.url == "http://localhost:8082/v1/"

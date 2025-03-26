@@ -86,13 +86,7 @@ if is_torch_available():
             self.not_jsonable = not_jsonable
 
     class DummyModelWithConfigAndKwargs(nn.Module, PyTorchModelHubMixin):
-        def __init__(
-            self,
-            num_classes: int = 42,
-            state: str = "layernorm",
-            config: Optional[Dict] = None,
-            **kwargs,
-        ):
+        def __init__(self, num_classes: int = 42, state: str = "layernorm", config: Optional[Dict] = None, **kwargs):
             super().__init__()
 
     class DummyModelWithModelCardAndCustomKwargs(
@@ -223,10 +217,7 @@ class PytorchHubMixinTest(unittest.TestCase):
 
         class TestMixin(ModelHubMixin):
             def _save_pretrained(self, save_directory: Path) -> None:
-                torch.save(
-                    DummyModel().state_dict(),
-                    save_directory / constants.PYTORCH_WEIGHTS_NAME,
-                )
+                torch.save(DummyModel().state_dict(), save_directory / constants.PYTORCH_WEIGHTS_NAME)
 
         TestMixin().save_pretrained(self.cache_dir)
         return self.cache_dir / constants.PYTORCH_WEIGHTS_NAME
@@ -339,12 +330,7 @@ class PytorchHubMixinTest(unittest.TestCase):
         assert card.data.library_name == "my-dummy-lib"
         assert card.data.license == "apache-2.0"
         assert card.data.pipeline_tag == "text-classification"
-        assert card.data.tags == [
-            "model_hub_mixin",
-            "pytorch_model_hub_mixin",
-            "tag1",
-            "tag2",
-        ]
+        assert card.data.tags == ["model_hub_mixin", "pytorch_model_hub_mixin", "tag1", "tag2"]
 
         # Model card template has been used
         assert "This is a dummy model card" in str(card)
@@ -365,10 +351,7 @@ class PytorchHubMixinTest(unittest.TestCase):
         # Test saving model => auto-generated config is saved
         model.save_pretrained(self.cache_dir)
         assert config_file.exists()
-        assert json.loads(config_file.read_text()) == {
-            "num_classes": 50,
-            "state": "layernorm",
-        }
+        assert json.loads(config_file.read_text()) == {"num_classes": 50, "state": "layernorm"}
 
         # Reload model => config is reloaded
         reloaded = DummyModelNoConfig.from_pretrained(self.cache_dir)
@@ -380,17 +363,11 @@ class PytorchHubMixinTest(unittest.TestCase):
         reloaded_with_default = DummyModelNoConfig.from_pretrained(self.cache_dir, state="other")
         assert reloaded_with_default.num_classes == 50
         assert reloaded_with_default.state == "other"
-        assert reloaded_with_default._hub_mixin_config == {
-            "num_classes": 50,
-            "state": "other",
-        }
+        assert reloaded_with_default._hub_mixin_config == {"num_classes": 50, "state": "other"}
 
         config_file.unlink()  # Remove config file
         reloaded_with_default.save_pretrained(self.cache_dir)
-        assert json.loads(config_file.read_text()) == {
-            "num_classes": 50,
-            "state": "other",
-        }
+        assert json.loads(config_file.read_text()) == {"num_classes": 50, "state": "other"}
 
     def test_save_with_non_jsonable_config(self):
         # Save with a non-jsonable value
@@ -449,13 +426,7 @@ class PytorchHubMixinTest(unittest.TestCase):
         # Test creating model with config and kwargs => all values are saved together in config.json
         model = DummyModelWithConfigAndKwargs(num_classes=50, state="layernorm", config={"a": 1}, b=2, c=3)
         model.save_pretrained(self.cache_dir)
-        assert model._hub_mixin_config == {
-            "num_classes": 50,
-            "state": "layernorm",
-            "a": 1,
-            "b": 2,
-            "c": 3,
-        }
+        assert model._hub_mixin_config == {"num_classes": 50, "state": "layernorm", "a": 1, "b": 2, "c": 3}
 
         reloaded = DummyModelWithConfigAndKwargs.from_pretrained(self.cache_dir)
         assert reloaded._hub_mixin_config == model._hub_mixin_config

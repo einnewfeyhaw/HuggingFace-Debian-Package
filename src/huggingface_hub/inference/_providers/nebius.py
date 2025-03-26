@@ -22,11 +22,7 @@ class NebiusConversationalTask(BaseConversationalTask):
 
 class NebiusTextToImageTask(TaskProviderHelper):
     def __init__(self):
-        super().__init__(
-            task="text-to-image",
-            provider="nebius",
-            base_url="https://api.studio.nebius.ai",
-        )
+        super().__init__(task="text-to-image", provider="nebius", base_url="https://api.studio.nebius.ai")
 
     def _prepare_route(self, mapped_model: str) -> str:
         return "/v1/images/generations"

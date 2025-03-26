@@ -20,11 +20,7 @@ from . import (
     __version__,  # noqa: F401 # for backward compatibility
     constants,
 )
-from ._local_folder import (
-    get_local_download_paths,
-    read_download_metadata,
-    write_download_metadata,
-)
+from ._local_folder import get_local_download_paths, read_download_metadata, write_download_metadata
 from .constants import (
     HUGGINGFACE_CO_URL_TEMPLATE,  # noqa: F401 # for backward compatibility
     HUGGINGFACE_HUB_CACHE,  # noqa: F401 # for backward compatibility
@@ -262,11 +258,7 @@ def hf_hub_url(
 
 
 def _request_wrapper(
-    method: HTTP_METHOD_T,
-    url: str,
-    *,
-    follow_relative_redirects: bool = False,
-    **params,
+    method: HTTP_METHOD_T, url: str, *, follow_relative_redirects: bool = False, **params
 ) -> requests.Response:
     """Wrapper around requests methods to follow relative redirects if `follow_relative_redirects=True` even when
     `allow_redirection=False`.
@@ -304,12 +296,7 @@ def _request_wrapper(
                 # Highly inspired by `resolve_redirects` from requests library.
                 # See https://github.com/psf/requests/blob/main/requests/sessions.py#L159
                 next_url = urlparse(url)._replace(path=parsed_target.path).geturl()
-                return _request_wrapper(
-                    method=method,
-                    url=next_url,
-                    follow_relative_redirects=True,
-                    **params,
-                )
+                return _request_wrapper(method=method, url=next_url, follow_relative_redirects=True, **params)
         return response
 
     # Perform request and return if status_code is not in the retry list.
@@ -382,12 +369,7 @@ def http_get(
         headers["Range"] = _adjust_range_header(headers.get("Range"), resume_size)
 
     r = _request_wrapper(
-        method="GET",
-        url=url,
-        stream=True,
-        proxies=proxies,
-        headers=headers,
-        timeout=constants.HF_HUB_DOWNLOAD_TIMEOUT,
+        method="GET", url=url, stream=True, proxies=proxies, headers=headers, timeout=constants.HF_HUB_DOWNLOAD_TIMEOUT
     )
     hf_raise_for_status(r)
     content_length = r.headers.get("Content-Length")
@@ -481,17 +463,9 @@ def http_get(
             # a transient error (network outage?). We log a warning message and try to resume the download a few times
             # before giving up. Tre retry mechanism is basic but should be enough in most cases.
             if _nb_retries <= 0:
-                logger.warning(
-                    "Error while downloading from %s: %s\nMax retries exceeded.",
-                    url,
-                    str(e),
-                )
+                logger.warning("Error while downloading from %s: %s\nMax retries exceeded.", url, str(e))
                 raise
-            logger.warning(
-                "Error while downloading from %s: %s\nTrying to resume download...",
-                url,
-                str(e),
-            )
+            logger.warning("Error while downloading from %s: %s\nTrying to resume download...", url, str(e))
             time.sleep(1)
             reset_sessions()  # In case of SSLError it's best to reset the shared requests.Session objects
             return http_get(
@@ -1022,11 +996,7 @@ def _hf_hub_download_to_cache_dir(
 
     # Prevent parallel downloads of the same file with a lock.
     # etag could be duplicated across repos,
-    lock_path = os.path.join(
-        locks_dir,
-        repo_folder_name(repo_id=repo_id, repo_type=repo_type),
-        f"{etag}.lock",
-    )
+    lock_path = os.path.join(locks_dir, repo_folder_name(repo_id=repo_id, repo_type=repo_type), f"{etag}.lock")
 
     # Some Windows versions do not allow for paths longer than 255 characters.
     # In this case, we must specify it as an extended path by using the "\\?\" prefix.
@@ -1130,12 +1100,7 @@ def _hf_hub_download_to_local_dir(
     if not force_download and paths.file_path.is_file():
         # etag matches => update metadata and return file
         if local_metadata is not None and local_metadata.etag == etag:
-            write_download_metadata(
-                local_dir=local_dir,
-                filename=filename,
-                commit_hash=commit_hash,
-                etag=etag,
-            )
+            write_download_metadata(local_dir=local_dir, filename=filename, commit_hash=commit_hash, etag=etag)
             return str(paths.file_path)
 
         # metadata is outdated + etag is a sha256
@@ -1146,12 +1111,7 @@ def _hf_hub_download_to_local_dir(
             with open(paths.file_path, "rb") as f:
                 file_hash = sha_fileobj(f).hex()
             if file_hash == etag:
-                write_download_metadata(
-                    local_dir=local_dir,
-                    filename=filename,
-                    commit_hash=commit_hash,
-                    etag=etag,
-                )
+                write_download_metadata(local_dir=local_dir, filename=filename, commit_hash=commit_hash, etag=etag)
                 return str(paths.file_path)
 
     # Local file doesn't exist or etag isn't a match => retrieve file from remote (or cache)
@@ -1169,12 +1129,7 @@ def _hf_hub_download_to_local_dir(
             with WeakFileLock(paths.lock_path):
                 paths.file_path.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(cached_path, paths.file_path)
-            write_download_metadata(
-                local_dir=local_dir,
-                filename=filename,
-                commit_hash=commit_hash,
-                etag=etag,
-            )
+            write_download_metadata(local_dir=local_dir, filename=filename, commit_hash=commit_hash, etag=etag)
             return str(paths.file_path)
 
     # Otherwise, let's download the file!
@@ -1335,9 +1290,7 @@ def get_hf_file_metadata(
         user_agent=user_agent,
         headers=headers,
     )
-    hf_headers["Accept-Encoding"] = (
-        "identity"  # prevent any compression => we want to know the real size of the file
-    )
+    hf_headers["Accept-Encoding"] = "identity"  # prevent any compression => we want to know the real size of the file
 
     # Retrieve metadata
     r = _request_wrapper(
@@ -1421,11 +1374,7 @@ def _get_metadata_or_catch_error(
         try:
             try:
                 metadata = get_hf_file_metadata(
-                    url=url,
-                    proxies=proxies,
-                    timeout=etag_timeout,
-                    headers=headers,
-                    token=token,
+                    url=url, proxies=proxies, timeout=etag_timeout, headers=headers, token=token
                 )
             except EntryNotFoundError as http_error:
                 if storage_folder is not None and relative_filename is not None:

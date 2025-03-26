@@ -143,10 +143,7 @@ def read_dduf_file(dduf_path: Union[os.PathLike, str]) -> Dict[str, DDUFEntry]:
             offset = _get_data_offset(zf, info)
 
             entries[info.filename] = DDUFEntry(
-                filename=info.filename,
-                offset=offset,
-                length=info.file_size,
-                dduf_path=dduf_path,
+                filename=info.filename, offset=offset, length=info.file_size, dduf_path=dduf_path
             )
 
     # Consistency checks on the DDUF file
@@ -160,8 +157,7 @@ def read_dduf_file(dduf_path: Union[os.PathLike, str]) -> Dict[str, DDUFEntry]:
 
 
 def export_entries_as_dduf(
-    dduf_path: Union[str, os.PathLike],
-    entries: Iterable[Tuple[str, Union[str, Path, bytes]]],
+    dduf_path: Union[str, os.PathLike], entries: Iterable[Tuple[str, Union[str, Path, bytes]]]
 ) -> None:
     """Write a DDUF file from an iterable of entries.
 

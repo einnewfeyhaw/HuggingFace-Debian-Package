@@ -23,18 +23,7 @@ import base64
 import logging
 import re
 import warnings
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    AsyncIterable,
-    Dict,
-    List,
-    Literal,
-    Optional,
-    Set,
-    Union,
-    overload,
-)
+from typing import TYPE_CHECKING, Any, AsyncIterable, Dict, List, Literal, Optional, Set, Union, overload
 
 from huggingface_hub import constants
 from huggingface_hub.errors import InferenceTimeoutError
@@ -96,11 +85,7 @@ from huggingface_hub.inference._generated.types import (
     ZeroShotClassificationOutputElement,
     ZeroShotImageClassificationOutputElement,
 )
-from huggingface_hub.inference._providers import (
-    PROVIDER_T,
-    HFInferenceTask,
-    get_provider_helper,
-)
+from huggingface_hub.inference._providers import PROVIDER_T, HFInferenceTask, get_provider_helper
 from huggingface_hub.utils import build_hf_headers, get_session, hf_raise_for_status
 from huggingface_hub.utils._deprecation import _deprecate_arguments, _deprecate_method
 
@@ -219,8 +204,7 @@ class AsyncInferenceClient:
         model: Optional[str] = None,
         task: Optional[str] = None,
         stream: Literal[False] = ...,
-    ) -> bytes:
-        ...
+    ) -> bytes: ...
 
     @overload
     async def post(  # type: ignore[misc]
@@ -231,8 +215,7 @@ class AsyncInferenceClient:
         model: Optional[str] = None,
         task: Optional[str] = None,
         stream: Literal[True] = ...,
-    ) -> AsyncIterable[bytes]:
-        ...
+    ) -> AsyncIterable[bytes]: ...
 
     @overload
     async def post(
@@ -243,8 +226,7 @@ class AsyncInferenceClient:
         model: Optional[str] = None,
         task: Optional[str] = None,
         stream: bool = False,
-    ) -> Union[bytes, AsyncIterable[bytes]]:
-        ...
+    ) -> Union[bytes, AsyncIterable[bytes]]: ...
 
     @_deprecate_method(
         version="0.31.0",
@@ -293,20 +275,17 @@ class AsyncInferenceClient:
     @overload
     async def _inner_post(  # type: ignore[misc]
         self, request_parameters: RequestParameters, *, stream: Literal[False] = ...
-    ) -> bytes:
-        ...
+    ) -> bytes: ...
 
     @overload
     async def _inner_post(  # type: ignore[misc]
         self, request_parameters: RequestParameters, *, stream: Literal[True] = ...
-    ) -> AsyncIterable[bytes]:
-        ...
+    ) -> AsyncIterable[bytes]: ...
 
     @overload
     async def _inner_post(
         self, request_parameters: RequestParameters, *, stream: bool = False
-    ) -> Union[bytes, AsyncIterable[bytes]]:
-        ...
+    ) -> Union[bytes, AsyncIterable[bytes]]: ...
 
     async def _inner_post(
         self, request_parameters: RequestParameters, *, stream: bool = False
@@ -561,8 +540,7 @@ class AsyncInferenceClient:
         top_logprobs: Optional[int] = None,
         top_p: Optional[float] = None,
         extra_body: Optional[Dict] = None,
-    ) -> ChatCompletionOutput:
-        ...
+    ) -> ChatCompletionOutput: ...
 
     @overload
     async def chat_completion(  # type: ignore
@@ -588,8 +566,7 @@ class AsyncInferenceClient:
         top_logprobs: Optional[int] = None,
         top_p: Optional[float] = None,
         extra_body: Optional[Dict] = None,
-    ) -> AsyncIterable[ChatCompletionStreamOutput]:
-        ...
+    ) -> AsyncIterable[ChatCompletionStreamOutput]: ...
 
     @overload
     async def chat_completion(
@@ -615,8 +592,7 @@ class AsyncInferenceClient:
         top_logprobs: Optional[int] = None,
         top_p: Optional[float] = None,
         extra_body: Optional[Dict] = None,
-    ) -> Union[ChatCompletionOutput, AsyncIterable[ChatCompletionStreamOutput]]:
-        ...
+    ) -> Union[ChatCompletionOutput, AsyncIterable[ChatCompletionStreamOutput]]: ...
 
     async def chat_completion(
         self,
@@ -1483,11 +1459,7 @@ class AsyncInferenceClient:
         return output[0] if isinstance(output, list) else output
 
     async def object_detection(
-        self,
-        image: ContentT,
-        *,
-        model: Optional[str] = None,
-        threshold: Optional[float] = None,
+        self, image: ContentT, *, model: Optional[str] = None, threshold: Optional[float] = None
     ) -> List[ObjectDetectionOutputElement]:
         """
         Perform object detection on the given image using the specified model.
@@ -1787,12 +1759,7 @@ class AsyncInferenceClient:
         provider_helper = get_provider_helper(self.provider, task="table-question-answering")
         request_parameters = provider_helper.prepare_request(
             inputs=None,
-            parameters={
-                "model": model,
-                "padding": padding,
-                "sequential": sequential,
-                "truncation": truncation,
-            },
+            parameters={"model": model, "padding": padding, "sequential": sequential, "truncation": truncation},
             extra_payload={"query": query, "table": table},
             headers=self.headers,
             model=model or self.model,
@@ -1992,8 +1959,7 @@ class AsyncInferenceClient:
         truncate: Optional[int] = None,
         typical_p: Optional[float] = None,
         watermark: Optional[bool] = None,
-    ) -> str:
-        ...
+    ) -> str: ...
 
     @overload
     async def text_generation(  # type: ignore
@@ -2023,8 +1989,7 @@ class AsyncInferenceClient:
         truncate: Optional[int] = None,
         typical_p: Optional[float] = None,
         watermark: Optional[bool] = None,
-    ) -> TextGenerationOutput:
-        ...
+    ) -> TextGenerationOutput: ...
 
     @overload
     async def text_generation(  # type: ignore
@@ -2054,8 +2019,7 @@ class AsyncInferenceClient:
         truncate: Optional[int] = None,
         typical_p: Optional[float] = None,
         watermark: Optional[bool] = None,
-    ) -> AsyncIterable[str]:
-        ...
+    ) -> AsyncIterable[str]: ...
 
     @overload
     async def text_generation(  # type: ignore
@@ -2085,8 +2049,7 @@ class AsyncInferenceClient:
         truncate: Optional[int] = None,
         typical_p: Optional[float] = None,
         watermark: Optional[bool] = None,
-    ) -> AsyncIterable[TextGenerationStreamOutput]:
-        ...
+    ) -> AsyncIterable[TextGenerationStreamOutput]: ...
 
     @overload
     async def text_generation(
@@ -2116,8 +2079,7 @@ class AsyncInferenceClient:
         truncate: Optional[int] = None,
         typical_p: Optional[float] = None,
         watermark: Optional[bool] = None,
-    ) -> Union[TextGenerationOutput, AsyncIterable[TextGenerationStreamOutput]]:
-        ...
+    ) -> Union[TextGenerationOutput, AsyncIterable[TextGenerationStreamOutput]]: ...
 
     async def text_generation(
         self,
@@ -3425,8 +3387,7 @@ class AsyncInferenceClient:
 
         for framework in frameworks:
             response = get_session().get(
-                f"{constants.INFERENCE_ENDPOINT}/framework/{framework}",
-                headers=build_hf_headers(token=self.token),
+                f"{constants.INFERENCE_ENDPOINT}/framework/{framework}", headers=build_hf_headers(token=self.token)
             )
             hf_raise_for_status(response)
             _unpack_response(framework, response.json())

@@ -532,9 +532,7 @@ class SpaceCardData(CardData):
         super().__init__(**kwargs)
 
 
-def model_index_to_eval_results(
-    model_index: List[Dict[str, Any]],
-) -> Tuple[str, List[EvalResult]]:
+def model_index_to_eval_results(model_index: List[Dict[str, Any]]) -> Tuple[str, List[EvalResult]]:
     """Takes in a model index and returns the model name and a list of `huggingface_hub.EvalResult` objects.
 
     A detailed spec of the model index can be found here:

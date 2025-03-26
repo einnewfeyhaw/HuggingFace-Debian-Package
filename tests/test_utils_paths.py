@@ -145,7 +145,6 @@ class TestDefaultIgnorePatterns(unittest.TestCase):
 
     def test_exclude_git_folder(self):
         filtered_paths = filter_repo_objects(
-            items=self.PATHS_TO_IGNORE + self.VALID_PATHS,
-            ignore_patterns=DEFAULT_IGNORE_PATTERNS,
+            items=self.PATHS_TO_IGNORE + self.VALID_PATHS, ignore_patterns=DEFAULT_IGNORE_PATTERNS
         )
         self.assertListEqual(list(filtered_paths), self.VALID_PATHS)

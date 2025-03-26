@@ -487,9 +487,7 @@ class SpaceCard(RepoCard):
     repo_type = "space"
 
 
-def _detect_line_ending(
-    content: str,
-) -> Literal["\r", "\n", "\r\n", None]:  # noqa: F722
+def _detect_line_ending(content: str) -> Literal["\r", "\n", "\r\n", None]:  # noqa: F722
     """Detect the line ending of a string. Used by RepoCard to avoid making huge diff on newlines.
 
     Uses same implementation as in Hub server, keep it in sync.
