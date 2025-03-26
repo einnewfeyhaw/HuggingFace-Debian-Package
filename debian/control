@@ -33,4 +33,5 @@ Depends:
  ${shlibs:Depends},
  ${misc:Depends},
 Description: Python library for HuggingFace Hub 
-The huggingface-hub library provides access to the HuggingFace Hub, allowing users to download and upload models,datasets and more.
+ The huggingface-hub library provides access to the HuggingFace Hub, 
+ allowing users to download and upload models,datasets and more.
