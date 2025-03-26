@@ -377,7 +377,11 @@ def _wrap_webhook_to_check_secret(func: Callable, webhook_secret: str) -> Callab
     if "request" not in initial_sig.parameters:
         _protected_func.__signature__ = initial_sig.replace(  # type: ignore
             parameters=(
-                inspect.Parameter(name="request", kind=inspect.Parameter.POSITIONAL_OR_KEYWORD, annotation=Request),
+                inspect.Parameter(
+                    name="request",
+                    kind=inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                    annotation=Request,
+                ),
             )
             + tuple(initial_sig.parameters.values())
         )

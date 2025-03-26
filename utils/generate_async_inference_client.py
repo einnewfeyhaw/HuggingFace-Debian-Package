@@ -467,7 +467,11 @@ def _adapt_info_and_health_endpoints(code: str) -> str:
 def _add_get_client_session(code: str) -> str:
     # Add trust_env as parameter
     code = _add_before(code, "proxies: Optional[Any] = None,", "trust_env: bool = False,")
-    code = _add_before(code, "\n        self.proxies = proxies\n", "\n        self.trust_env = trust_env")
+    code = _add_before(
+        code,
+        "\n        self.proxies = proxies\n",
+        "\n        self.trust_env = trust_env",
+    )
 
     # Document `trust_env` parameter
     code = _add_before(

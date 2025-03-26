@@ -2,7 +2,11 @@ import unittest
 from unittest.mock import Mock, patch
 
 from huggingface_hub.utils import get_hf_hub_version, get_python_version
-from huggingface_hub.utils._headers import _deduplicate_user_agent, _http_user_agent, build_hf_headers
+from huggingface_hub.utils._headers import (
+    _deduplicate_user_agent,
+    _http_user_agent,
+    build_hf_headers,
+)
 
 from .testing_utils import handle_injection_in_test
 
@@ -142,16 +146,25 @@ class TestUserAgentHeadersUtil(unittest.TestCase):
             "python/3.7; python/3.8; hf_hub/0.12; transformers/None; diffusers/0.12.1",
         )
 
-    @patch("huggingface_hub.utils._telemetry.constants.HF_HUB_USER_AGENT_ORIGIN", "custom-origin")
+    @patch(
+        "huggingface_hub.utils._telemetry.constants.HF_HUB_USER_AGENT_ORIGIN",
+        "custom-origin",
+    )
     def test_user_agent_with_origin(self) -> None:
         self.assertTrue(self._get_user_agent().endswith("origin/custom-origin"))
 
-    @patch("huggingface_hub.utils._telemetry.constants.HF_HUB_USER_AGENT_ORIGIN", "custom-origin")
+    @patch(
+        "huggingface_hub.utils._telemetry.constants.HF_HUB_USER_AGENT_ORIGIN",
+        "custom-origin",
+    )
     def test_user_agent_with_origin_and_user_agent(self) -> None:
         self.assertTrue(
             self._get_user_agent(user_agent={"a": "b", "c": "d"}).endswith("a/b; c/d; origin/custom-origin")
         )
 
-    @patch("huggingface_hub.utils._telemetry.constants.HF_HUB_USER_AGENT_ORIGIN", "custom-origin")
+    @patch(
+        "huggingface_hub.utils._telemetry.constants.HF_HUB_USER_AGENT_ORIGIN",
+        "custom-origin",
+    )
     def test_user_agent_with_origin_and_user_agent_str(self) -> None:
         self.assertTrue(self._get_user_agent(user_agent="a/b;c/d").endswith("a/b; c/d; origin/custom-origin"))

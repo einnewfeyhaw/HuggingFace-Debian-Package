@@ -40,10 +40,10 @@ exclude = [
 line-length = 119
 # Ignored rules:
 # "E501" -> line length violation
-lint.ignore = ["E501"]
-lint.select = ["E", "F", "I", "W"]
+ignore = ["E501"]
+select = ["E", "F", "I", "W"]
 
-[tool.ruff.lint.isort]
+[tool.ruff.isort]
 known-first-party = ["huggingface_hub"]
 lines-after-imports = 2
 

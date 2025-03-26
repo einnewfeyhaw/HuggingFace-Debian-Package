@@ -7,37 +7,37 @@ check_dirs := contrib src tests utils setup.py
 quality:
 	ruff check $(check_dirs)  # linter
 	ruff format --check $(check_dirs) # formatter
-	python utils/check_inference_input_params.py
-	python utils/check_contrib_list.py
-	python utils/check_static_imports.py
-	python utils/check_all_variable.py
-	python utils/generate_async_inference_client.py
+	PYTHONPATH=$(CURDIR)/src python3 utils/check_inference_input_params.py
+	python3 utils/check_contrib_list.py
+	PYTHONPATH=$(CURDIR)/src python3 utils/check_static_imports.py
+	PYTHONPATH=$(CURDIR)/src python3 utils/check_all_variable.py
+	python3 utils/generate_async_inference_client.py
 
 	mypy src
 
 style:
 	ruff format $(check_dirs) # formatter
 	ruff check --fix $(check_dirs) # linter
-	python utils/check_contrib_list.py --update
-	python utils/check_static_imports.py --update
-	python utils/check_all_variable.py --update
-	python utils/generate_async_inference_client.py --update
+	python3 utils/check_contrib_list.py --update
+	PYTHONPATH=$(CURDIR)/src python3 utils/check_static_imports.py --update
+	PYTHONPATH=$(CURDIR)/src python3 utils/check_all_variable.py --update
+	python3 utils/generate_async_inference_client.py --update
 
 inference_check:
-	python utils/generate_inference_types.py
-	python utils/check_task_parameters.py
+	python3 utils/generate_inference_types.py
+	python3 utils/check_task_parameters.py
 
 inference_update:
-	python utils/generate_inference_types.py --update
-	python utils/check_task_parameters.py --update
+	python3 utils/generate_inference_types.py --update
+	python3 utils/check_task_parameters.py --update
 
 
 repocard:
-	python utils/push_repocard_examples.py
+	python3 utils/push_repocard_examples.py
 
 
-test:
-	pytest ./tests/
+#test:
+#	PYTHONPATH=$(CURDIR)/src pytest -v --tb=long ./tests/
 
 # Taken from https://stackoverflow.com/a/12110773
 # Commands:

@@ -49,12 +49,23 @@ class TagCommands(BaseHuggingfaceCLICommand):
     def register_subcommand(parser: _SubParsersAction):
         tag_parser = parser.add_parser("tag", help="(create, list, delete) tags for a repo in the hub")
 
-        tag_parser.add_argument("repo_id", type=str, help="The ID of the repo to tag (e.g. `username/repo-name`).")
-        tag_parser.add_argument("tag", nargs="?", type=str, help="The name of the tag for creation or deletion.")
+        tag_parser.add_argument(
+            "repo_id",
+            type=str,
+            help="The ID of the repo to tag (e.g. `username/repo-name`).",
+        )
+        tag_parser.add_argument(
+            "tag",
+            nargs="?",
+            type=str,
+            help="The name of the tag for creation or deletion.",
+        )
         tag_parser.add_argument("-m", "--message", type=str, help="The description of the tag to create.")
         tag_parser.add_argument("--revision", type=str, help="The git revision to tag.")
         tag_parser.add_argument(
-            "--token", type=str, help="A User Access Token generated from https://huggingface.co/settings/tokens."
+            "--token",
+            type=str,
+            help="A User Access Token generated from https://huggingface.co/settings/tokens.",
         )
         tag_parser.add_argument(
             "--repo-type",
@@ -62,7 +73,12 @@ class TagCommands(BaseHuggingfaceCLICommand):
             default="model",
             help="Set the type of repository (model, dataset, or space).",
         )
-        tag_parser.add_argument("-y", "--yes", action="store_true", help="Answer Yes to prompts automatically.")
+        tag_parser.add_argument(
+            "-y",
+            "--yes",
+            action="store_true",
+            help="Answer Yes to prompts automatically.",
+        )
 
         tag_parser.add_argument("-l", "--list", action="store_true", help="List tags for a repository.")
         tag_parser.add_argument("-d", "--delete", action="store_true", help="Delete a tag for a repository.")

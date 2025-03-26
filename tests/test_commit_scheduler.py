@@ -114,7 +114,14 @@ class TestCommitScheduler(unittest.TestCase):
         push_3 = commits[0].commit_id
 
         def _download(filename: str, revision: str) -> Path:
-            return Path(hf_hub_download(repo_id=repo_id, filename=filename, cache_dir=hub_cache, revision=revision))
+            return Path(
+                hf_hub_download(
+                    repo_id=repo_id,
+                    filename=filename,
+                    cache_dir=hub_cache,
+                    revision=revision,
+                )
+            )
 
         # Check file.txt consistency
         file_push1 = _download(filename="file.txt", revision=push_1)
@@ -264,7 +271,8 @@ class TestPartialFileIO(unittest.TestCase):
     def test_with_commit_operation_add(self) -> None:
         # Truncated file
         op_truncated = CommitOperationAdd(
-            path_or_fileobj=PartialFileIO(self.file_path, size_limit=5), path_in_repo="file.txt"
+            path_or_fileobj=PartialFileIO(self.file_path, size_limit=5),
+            path_in_repo="file.txt",
         )
         self.assertEqual(op_truncated.upload_info.size, 5)
         self.assertEqual(op_truncated.upload_info.sample, b"12345")
@@ -274,7 +282,8 @@ class TestPartialFileIO(unittest.TestCase):
 
         # Full file
         op_full = CommitOperationAdd(
-            path_or_fileobj=PartialFileIO(self.file_path, size_limit=9), path_in_repo="file.txt"
+            path_or_fileobj=PartialFileIO(self.file_path, size_limit=9),
+            path_in_repo="file.txt",
         )
         self.assertEqual(op_full.upload_info.size, 9)
         self.assertEqual(op_full.upload_info.sample, b"123456789")

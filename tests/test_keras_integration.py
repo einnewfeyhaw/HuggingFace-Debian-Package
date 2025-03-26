@@ -12,7 +12,12 @@ from huggingface_hub.keras_mixin import (
     push_to_hub_keras,
     save_pretrained_keras,
 )
-from huggingface_hub.utils import is_graphviz_available, is_pydot_available, is_tf_available, logging
+from huggingface_hub.utils import (
+    is_graphviz_available,
+    is_pydot_available,
+    is_tf_available,
+    logging,
+)
 
 from .testing_constants import ENDPOINT_STAGING, TOKEN, USER
 from .testing_utils import repo_name
@@ -121,7 +126,10 @@ class HubMixinTestKeras(CommonKerasTest):
 
         # Test config has been pushed to hub
         config_path = hf_hub_download(
-            repo_id=repo_id, filename="config.json", use_auth_token=TOKEN, cache_dir=self.cache_dir
+            repo_id=repo_id,
+            filename="config.json",
+            use_auth_token=TOKEN,
+            cache_dir=self.cache_dir,
         )
         with open(config_path) as f:
             assert json.load(f) == {"num": 7, "act": "gelu_fast"}
@@ -230,7 +238,11 @@ class HubKerasSequentialTest(CommonKerasTest):
         model = self.model_init()
         model.build((None, 2))
         save_pretrained_keras(
-            model, self.cache_dir, config={"num": 10, "act": "gelu_fast"}, plot_model=True, tags=None
+            model,
+            self.cache_dir,
+            config={"num": 10, "act": "gelu_fast"},
+            plot_model=True,
+            tags=None,
         )
         new_model = from_pretrained_keras(self.cache_dir)
         self.assertTrue(tf.reduce_all(tf.equal(new_model.weights[0], model.weights[0])))
@@ -253,7 +265,13 @@ class HubKerasSequentialTest(CommonKerasTest):
         model = self.model_init()
         model = self.model_fit(model)
 
-        push_to_hub_keras(model, repo_id=repo_id, token=TOKEN, api_endpoint=ENDPOINT_STAGING, plot_model=False)
+        push_to_hub_keras(
+            model,
+            repo_id=repo_id,
+            token=TOKEN,
+            api_endpoint=ENDPOINT_STAGING,
+            plot_model=False,
+        )
         repo_files = self._api.list_repo_files(repo_id)
         self.assertNotIn("model.png", repo_files)
         self._api.delete_repo(repo_id=repo_id)
@@ -268,12 +286,24 @@ class HubKerasSequentialTest(CommonKerasTest):
 
         model = self.model_init()
         model.build((None, 2))
-        push_to_hub_keras(model, repo_id=repo_id, log_dir=log_dir, api_endpoint=ENDPOINT_STAGING, token=TOKEN)
+        push_to_hub_keras(
+            model,
+            repo_id=repo_id,
+            log_dir=log_dir,
+            api_endpoint=ENDPOINT_STAGING,
+            token=TOKEN,
+        )
 
         log_dir2 = self.cache_dir / "tb_log_dir2"
         log_dir2.mkdir(parents=True, exist_ok=True)
         (log_dir2 / "override.txt").write_text("Keras FTW")
-        push_to_hub_keras(model, repo_id=repo_id, log_dir=log_dir2, api_endpoint=ENDPOINT_STAGING, token=TOKEN)
+        push_to_hub_keras(
+            model,
+            repo_id=repo_id,
+            log_dir=log_dir2,
+            api_endpoint=ENDPOINT_STAGING,
+            token=TOKEN,
+        )
 
         files = self._api.list_repo_files(repo_id)
         self.assertIn("logs/override.txt", files)

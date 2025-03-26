@@ -113,7 +113,9 @@ def generate_future_compatible_method(method: Callable, method_source: str) -> s
         if match is None:
             raise ValueError(f"Could not find signature of {method} in source.")
         method_source = method_source.replace(
-            match.group(), match.group().replace(") ->", f" {AS_FUTURE_SIGNATURE_TEMPLATE}) ->"), 1
+            match.group(),
+            match.group().replace(") ->", f" {AS_FUTURE_SIGNATURE_TEMPLATE}) ->"),
+            1,
         )
 
     # 2.b. Update return value
@@ -142,7 +144,9 @@ def generate_future_compatible_method(method: Callable, method_source: str) -> s
     no_future_stub = "    @overload\n" + method_sig
     no_future_stub = no_future_stub.replace(AS_FUTURE_SIGNATURE_TEMPLATE, "as_future: Literal[False] = ...")
     no_future_stub = SIGNATURE_REGEX_RETURN_TYPE.sub(rf"-> {no_future_return_type}:", no_future_stub)
-    no_future_stub += "  # type: ignore\n        ..."  # only the first stub requires "type: ignore"
+    no_future_stub += (
+        "  # type: ignore\n        ..."  # only the first stub requires "type: ignore"
+    )
 
     # 3.b. Stub when `as_future=True`
     with_future_stub = "    @overload\n" + method_sig

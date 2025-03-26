@@ -11,13 +11,25 @@ from .fal_ai import (
     FalAITextToVideoTask,
 )
 from .fireworks_ai import FireworksAIConversationalTask
-from .hf_inference import HFInferenceBinaryInputTask, HFInferenceConversational, HFInferenceTask
+from .hf_inference import (
+    HFInferenceBinaryInputTask,
+    HFInferenceConversational,
+    HFInferenceTask,
+)
 from .hyperbolic import HyperbolicTextGenerationTask, HyperbolicTextToImageTask
-from .nebius import NebiusConversationalTask, NebiusTextGenerationTask, NebiusTextToImageTask
+from .nebius import (
+    NebiusConversationalTask,
+    NebiusTextGenerationTask,
+    NebiusTextToImageTask,
+)
 from .novita import NovitaConversationalTask, NovitaTextGenerationTask
 from .replicate import ReplicateTask, ReplicateTextToSpeechTask
 from .sambanova import SambanovaConversationalTask
-from .together import TogetherConversationalTask, TogetherTextGenerationTask, TogetherTextToImageTask
+from .together import (
+    TogetherConversationalTask,
+    TogetherTextGenerationTask,
+    TogetherTextToImageTask,
+)
 
 
 PROVIDER_T = Literal[

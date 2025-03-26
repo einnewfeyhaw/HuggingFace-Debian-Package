@@ -4,7 +4,11 @@ from typing import Optional, Type, Union
 
 import pytest
 
-from huggingface_hub.utils._typing import is_jsonable, is_simple_optional_type, unwrap_simple_optional_type
+from huggingface_hub.utils._typing import (
+    is_jsonable,
+    is_simple_optional_type,
+    unwrap_simple_optional_type,
+)
 
 
 class NotSerializableClass:

@@ -13,7 +13,11 @@ import pytest
 
 from huggingface_hub import hf_file_system
 from huggingface_hub.errors import RepositoryNotFoundError, RevisionNotFoundError
-from huggingface_hub.hf_file_system import HfFileSystem, HfFileSystemFile, HfFileSystemStreamFile
+from huggingface_hub.hf_file_system import (
+    HfFileSystem,
+    HfFileSystemFile,
+    HfFileSystemStreamFile,
+)
 
 from .testing_constants import ENDPOINT_STAGING, TOKEN
 from .testing_utils import repo_name
@@ -103,7 +107,12 @@ class HfFileSystemTests(unittest.TestCase):
         )
         self.assertEqual(
             sorted(self.hffs.glob(self.hf_path + "@main" + "/*")),
-            sorted([self.hf_path + "@main" + "/.gitattributes", self.hf_path + "@main" + "/data"]),
+            sorted(
+                [
+                    self.hf_path + "@main" + "/.gitattributes",
+                    self.hf_path + "@main" + "/data",
+                ]
+            ),
         )
         self.assertEqual(
             self.hffs.glob(self.hf_path + "@refs%2Fpr%2F1" + "/data/*"),
@@ -160,7 +169,10 @@ class HfFileSystemTests(unittest.TestCase):
 
     def test_remove_file(self):
         self.hffs.rm_file(self.text_file)
-        self.assertEqual(self.hffs.glob(self.hf_path + "/data/*"), [self.hf_path + "/data/binary_data.bin"])
+        self.assertEqual(
+            self.hffs.glob(self.hf_path + "/data/*"),
+            [self.hf_path + "/data/binary_data.bin"],
+        )
         self.hffs.rm_file(self.hf_path + "@refs/pr/1" + "/data/binary_data_for_pr.bin")
         self.assertEqual(self.hffs.glob(self.hf_path + "@refs/pr/1" + "/data/*"), [])
 
@@ -198,7 +210,10 @@ class HfFileSystemTests(unittest.TestCase):
         data = "new text data"
         with self.hffs.open(self.hf_path + "/data/new_text_data.txt", "w") as f:
             f.write(data)
-        self.assertIn(self.hf_path + "/data/new_text_data.txt", self.hffs.glob(self.hf_path + "/data/*"))
+        self.assertIn(
+            self.hf_path + "/data/new_text_data.txt",
+            self.hffs.glob(self.hf_path + "/data/*"),
+        )
         with self.hffs.open(self.hf_path + "/data/new_text_data.txt", "r") as f:
             self.assertEqual(f.read(), data)
 
@@ -208,7 +223,10 @@ class HfFileSystemTests(unittest.TestCase):
             for _ in range(8):  # 32MB in total
                 f.write(data)
 
-        self.assertIn(self.hf_path + "/data/new_text_data_big.txt", self.hffs.glob(self.hf_path + "/data/*"))
+        self.assertIn(
+            self.hf_path + "/data/new_text_data_big.txt",
+            self.hffs.glob(self.hf_path + "/data/*"),
+        )
         with self.hffs.open(self.hf_path + "/data/new_text_data_big.txt", "r") as f:
             for _ in range(8):
                 self.assertEqual(f.read(len(data)), data)
@@ -230,7 +248,10 @@ class HfFileSystemTests(unittest.TestCase):
         self.assertIsNone(self.hffs.info(self.hf_path + "/data/text_data_copy.txt")["lfs"])
         # LFS file
         self.assertIsNotNone(self.hffs.info(self.hf_path + "/data/binary_data.bin")["lfs"])
-        self.hffs.cp_file(self.hf_path + "/data/binary_data.bin", self.hf_path + "/data/binary_data_copy.bin")
+        self.hffs.cp_file(
+            self.hf_path + "/data/binary_data.bin",
+            self.hf_path + "/data/binary_data_copy.bin",
+        )
         with self.hffs.open(self.hf_path + "/data/binary_data_copy.bin", "rb") as f:
             self.assertEqual(f.read(), b"dummy binary data")
         self.assertIsNotNone(self.hffs.info(self.hf_path + "/data/binary_data_copy.bin")["lfs"])
@@ -354,7 +375,8 @@ class HfFileSystemTests(unittest.TestCase):
     def test_find_root_directory_no_revision(self):
         files = self.hffs.find(self.hf_path, detail=False)
         self.assertEqual(
-            files, self.hffs.ls(self.hf_path, detail=False)[1:] + self.hffs.ls(self.hf_path + "/data", detail=False)
+            files,
+            self.hffs.ls(self.hf_path, detail=False)[1:] + self.hffs.ls(self.hf_path + "/data", detail=False),
         )
 
         files = self.hffs.find(self.hf_path, detail=True)
@@ -478,9 +500,27 @@ class HfFileSystemTests(unittest.TestCase):
         ("username/my_model", None, "model", "username/my_model", "main"),
         ("username/my_model", "dev", "model", "username/my_model", "dev"),
         ("username/my_model@dev", None, "model", "username/my_model", "dev"),
-        ("datasets/username/my_dataset", None, "dataset", "username/my_dataset", "main"),
-        ("datasets/username/my_dataset", "dev", "dataset", "username/my_dataset", "dev"),
-        ("datasets/username/my_dataset@dev", None, "dataset", "username/my_dataset", "dev"),
+        (
+            "datasets/username/my_dataset",
+            None,
+            "dataset",
+            "username/my_dataset",
+            "main",
+        ),
+        (
+            "datasets/username/my_dataset",
+            "dev",
+            "dataset",
+            "username/my_dataset",
+            "dev",
+        ),
+        (
+            "datasets/username/my_dataset@dev",
+            None,
+            "dataset",
+            "username/my_dataset",
+            "dev",
+        ),
         # Parse with hf:// protocol
         ("hf://gpt2", None, "model", "gpt2", "main"),
         ("hf://gpt2", "dev", "model", "gpt2", "dev"),
@@ -490,7 +530,13 @@ class HfFileSystemTests(unittest.TestCase):
         ("hf://datasets/squad@dev", None, "dataset", "squad", "dev"),
         # Parse with `refs/convert/parquet` and `refs/pr/(\d)+` revisions.
         # Regression tests for https://github.com/huggingface/huggingface_hub/issues/1710.
-        ("datasets/squad@refs/convert/parquet", None, "dataset", "squad", "refs/convert/parquet"),
+        (
+            "datasets/squad@refs/convert/parquet",
+            None,
+            "dataset",
+            "squad",
+            "refs/convert/parquet",
+        ),
         (
             "hf://datasets/username/my_dataset@refs/convert/parquet",
             None,
@@ -500,9 +546,27 @@ class HfFileSystemTests(unittest.TestCase):
         ),
         ("gpt2@refs/pr/2", None, "model", "gpt2", "refs/pr/2"),
         ("gpt2@refs%2Fpr%2F2", None, "model", "gpt2", "refs/pr/2"),
-        ("hf://username/my_model@refs/pr/10", None, "model", "username/my_model", "refs/pr/10"),
-        ("hf://username/my_model@refs/pr/10", "refs/pr/10", "model", "username/my_model", "refs/pr/10"),
-        ("hf://username/my_model@refs%2Fpr%2F10", "refs/pr/10", "model", "username/my_model", "refs/pr/10"),
+        (
+            "hf://username/my_model@refs/pr/10",
+            None,
+            "model",
+            "username/my_model",
+            "refs/pr/10",
+        ),
+        (
+            "hf://username/my_model@refs/pr/10",
+            "refs/pr/10",
+            "model",
+            "username/my_model",
+            "refs/pr/10",
+        ),
+        (
+            "hf://username/my_model@refs%2Fpr%2F10",
+            "refs/pr/10",
+            "model",
+            "username/my_model",
+            "refs/pr/10",
+        ),
     ],
 )
 def test_resolve_path(
@@ -533,9 +597,17 @@ def test_resolve_path(
     "path,revision,expected_path",
     [
         ("hf://datasets/squad@dev", None, "datasets/squad@dev"),
-        ("datasets/squad@refs/convert/parquet", None, "datasets/squad@refs/convert/parquet"),
+        (
+            "datasets/squad@refs/convert/parquet",
+            None,
+            "datasets/squad@refs/convert/parquet",
+        ),
         ("hf://username/my_model@refs/pr/10", None, "username/my_model@refs/pr/10"),
-        ("username/my_model", "refs/weirdo", "username/my_model@refs%2Fweirdo"),  # not a "special revision" -> encode
+        (
+            "username/my_model",
+            "refs/weirdo",
+            "username/my_model@refs%2Fweirdo",
+        ),  # not a "special revision" -> encode
     ],
 )
 def test_unresolve_path(path: str, revision: Optional[str], expected_path: str, path_in_repo: str) -> None:

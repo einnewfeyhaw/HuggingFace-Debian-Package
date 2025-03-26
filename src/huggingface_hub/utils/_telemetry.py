@@ -69,7 +69,12 @@ def send_telemetry(
 
     _start_telemetry_thread()  # starts thread only if doesn't exist yet
     _TELEMETRY_QUEUE.put(
-        {"topic": topic, "library_name": library_name, "library_version": library_version, "user_agent": user_agent}
+        {
+            "topic": topic,
+            "library_name": library_name,
+            "library_version": library_version,
+            "user_agent": user_agent,
+        }
     )
 
 

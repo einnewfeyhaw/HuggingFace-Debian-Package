@@ -6,7 +6,12 @@ import pytest
 
 from huggingface_hub import constants
 from huggingface_hub._login import _login, _set_active_token, auth_switch, logout
-from huggingface_hub.utils._auth import _get_token_by_name, _get_token_from_file, _save_token, get_stored_tokens
+from huggingface_hub.utils._auth import (
+    _get_token_by_name,
+    _get_token_from_file,
+    _save_token,
+    get_stored_tokens,
+)
 
 from .testing_constants import ENDPOINT_STAGING, OTHER_TOKEN, TOKEN
 

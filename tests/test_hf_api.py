@@ -267,7 +267,10 @@ class HfApiEndpointsTest(HfApiCommonTest):
         for gated_value in ["auto", "manual", False]:
             for private_value in [True, False]:
                 self._api.update_repo_settings(
-                    repo_id=repo_id, repo_type=repo_type, gated=gated_value, private=private_value
+                    repo_id=repo_id,
+                    repo_type=repo_type,
+                    gated=gated_value,
+                    private=private_value,
                 )
                 info = self._api.dataset_info(repo_id)
                 assert info.gated == gated_value
@@ -341,7 +344,11 @@ class CommitApiTest(HfApiCommonTest):
     @use_tmp_repo()
     def test_upload_file_pathlib_path(self, repo_url: RepoUrl) -> None:
         """Regression test for https://github.com/huggingface/huggingface_hub/issues/1246."""
-        self._api.upload_file(path_or_fileobj=Path(self.tmp_file), path_in_repo="file.txt", repo_id=repo_url.repo_id)
+        self._api.upload_file(
+            path_or_fileobj=Path(self.tmp_file),
+            path_in_repo="file.txt",
+            repo_id=repo_url.repo_id,
+        )
         self.assertIn("file.txt", self._api.list_repo_files(repo_id=repo_url.repo_id))
 
     @use_tmp_repo()
@@ -437,13 +444,19 @@ class CommitApiTest(HfApiCommonTest):
             repo_id=repo_id,
             create_pr=True,
         )
-        self.assertEqual(return_val, f"{repo_url}/blob/{quote('refs/pr/1', safe='')}/temp/new_file.md")
+        self.assertEqual(
+            return_val,
+            f"{repo_url}/blob/{quote('refs/pr/1', safe='')}/temp/new_file.md",
+        )
         self.assertIsInstance(return_val, CommitInfo)
 
         with SoftTemporaryDirectory() as cache_dir:
             with open(
                 hf_hub_download(
-                    repo_id=repo_id, filename="temp/new_file.md", revision="refs/pr/1", cache_dir=cache_dir
+                    repo_id=repo_id,
+                    filename="temp/new_file.md",
+                    revision="refs/pr/1",
+                    cache_dir=cache_dir,
                 )
             ) as f:
                 self.assertEqual(f.read(), self.tmp_file_content)
@@ -486,7 +499,10 @@ class CommitApiTest(HfApiCommonTest):
             local_path = os.path.join(self.tmp_dir, rpath)
             remote_path = f"temp/dir/{rpath}"
             filepath = hf_hub_download(
-                repo_id=repo_id, filename=remote_path, revision="main", use_auth_token=self._token
+                repo_id=repo_id,
+                filename=remote_path,
+                revision="main",
+                use_auth_token=self._token,
             )
             assert filepath is not None
             with open(filepath, "rb") as downloaded_file:
@@ -505,7 +521,10 @@ class CommitApiTest(HfApiCommonTest):
 
         # Upload folder as a new PR
         return_val = self._api.upload_folder(
-            folder_path=self.tmp_dir, path_in_repo="temp/dir", repo_id=repo_id, create_pr=True
+            folder_path=self.tmp_dir,
+            path_in_repo="temp/dir",
+            repo_id=repo_id,
+            create_pr=True,
         )
         self.assertEqual(return_val, f"{self._api.endpoint}/{repo_id}/tree/refs%2Fpr%2F1/temp/dir")
 
@@ -543,13 +562,23 @@ class CommitApiTest(HfApiCommonTest):
         self._api.upload_folder(folder_path=self.tmp_dir, repo_id=repo_url.repo_id)
         self.assertEqual(
             set(self._api.list_repo_files(repo_id=repo_url.repo_id)),
-            {".gitattributes", ".git_something/file.txt", "file.git", "temp", "nested/file.bin"},
+            {
+                ".gitattributes",
+                ".git_something/file.txt",
+                "file.git",
+                "temp",
+                "nested/file.bin",
+            },
         )
 
     @use_tmp_repo()
     def test_upload_folder_gitignore_already_exists(self, repo_url: RepoUrl) -> None:
         # Ignore nested folder
-        self._api.upload_file(path_or_fileobj=b"nested/*\n", path_in_repo=".gitignore", repo_id=repo_url.repo_id)
+        self._api.upload_file(
+            path_or_fileobj=b"nested/*\n",
+            path_in_repo=".gitignore",
+            repo_id=repo_url.repo_id,
+        )
 
         # Upload folder
         self._api.upload_folder(folder_path=self.tmp_dir, repo_id=repo_url.repo_id)
@@ -573,7 +602,11 @@ class CommitApiTest(HfApiCommonTest):
         repo_id = repo_url.repo_id
 
         # Upload a first file
-        self._api.upload_file(path_or_fileobj=self.tmp_file, path_in_repo="temp/new_file.md", repo_id=repo_id)
+        self._api.upload_file(
+            path_or_fileobj=self.tmp_file,
+            path_in_repo="temp/new_file.md",
+            repo_id=repo_id,
+        )
 
         # Create a commit with a PR
         operations = [
@@ -581,7 +614,10 @@ class CommitApiTest(HfApiCommonTest):
             CommitOperationAdd(path_in_repo="buffer", path_or_fileobj=b"Buffer data"),
         ]
         resp = self._api.create_commit(
-            operations=operations, commit_message="Test create_commit", repo_id=repo_id, create_pr=True
+            operations=operations,
+            commit_message="Test create_commit",
+            repo_id=repo_id,
+            create_pr=True,
         )
 
         # Check commit info
@@ -677,7 +713,11 @@ class CommitApiTest(HfApiCommonTest):
     @use_tmp_repo()
     def test_create_commit(self, repo_url: RepoUrl) -> None:
         repo_id = repo_url.repo_id
-        self._api.upload_file(path_or_fileobj=self.tmp_file, path_in_repo="temp/new_file.md", repo_id=repo_id)
+        self._api.upload_file(
+            path_or_fileobj=self.tmp_file,
+            path_in_repo="temp/new_file.md",
+            repo_id=repo_id,
+        )
         with open(self.tmp_file, "rb") as fileobj:
             operations = [
                 CommitOperationDelete(path_in_repo="temp/new_file.md"),
@@ -692,7 +732,11 @@ class CommitApiTest(HfApiCommonTest):
                     path_or_fileobj=self.tmp_file,
                 ),
             ]
-            resp = self._api.create_commit(operations=operations, commit_message="Test create_commit", repo_id=repo_id)
+            resp = self._api.create_commit(
+                operations=operations,
+                commit_message="Test create_commit",
+                repo_id=repo_id,
+            )
             # Check commit info
             self.assertIsInstance(resp, CommitInfo)
             self.assertIsNone(resp.pr_url)  # No pr created
@@ -722,7 +766,11 @@ class CommitApiTest(HfApiCommonTest):
         parent_commit = self._api.model_info(repo_id).sha
 
         # Upload new file
-        self._api.upload_file(path_or_fileobj=self.tmp_file, path_in_repo="temp/new_file.md", repo_id=repo_id)
+        self._api.upload_file(
+            path_or_fileobj=self.tmp_file,
+            path_in_repo="temp/new_file.md",
+            repo_id=repo_id,
+        )
 
         # Creating a commit with a parent commit that is not the current main should fail
         operations = [
@@ -918,7 +966,10 @@ class CommitApiTest(HfApiCommonTest):
                 repo_id=repo_id,
                 commit_message="Copy a file that doesn't exist.",
                 operations=[
-                    CommitOperationCopy(src_path_in_repo="doesnt-exist.txt", path_in_repo="doesnt-exist Copy.txt")
+                    CommitOperationCopy(
+                        src_path_in_repo="doesnt-exist.txt",
+                        path_in_repo="doesnt-exist Copy.txt",
+                    )
                 ],
             )
 
@@ -991,7 +1042,10 @@ class CommitApiTest(HfApiCommonTest):
                 self._api.create_commit(
                     repo_id=repo_url.repo_id,
                     operations=[
-                        CommitOperationAdd(path_in_repo="README.md", path_or_fileobj=INVALID_MODELCARD.encode()),
+                        CommitOperationAdd(
+                            path_in_repo="README.md",
+                            path_or_fileobj=INVALID_MODELCARD.encode(),
+                        ),
                         CommitOperationAdd(path_in_repo="file.txt", path_or_fileobj=b"content"),
                         CommitOperationAdd(path_in_repo="lfs.bin", path_or_fileobj=b"content"),
                     ],
@@ -1077,7 +1131,10 @@ class CommitApiTest(HfApiCommonTest):
             commit_message="initial commit",
             operations=[
                 CommitOperationAdd(path_or_fileobj=b"Regular file content", path_in_repo="file.txt"),
-                CommitOperationAdd(path_or_fileobj=b"Regular file content", path_in_repo="file_copy.txt"),
+                CommitOperationAdd(
+                    path_or_fileobj=b"Regular file content",
+                    path_in_repo="file_copy.txt",
+                ),
                 CommitOperationAdd(path_or_fileobj=b"LFS content", path_in_repo="lfs.bin"),
                 CommitOperationAdd(path_or_fileobj=b"LFS content", path_in_repo="lfs_copy.bin"),
             ],
@@ -1165,7 +1222,14 @@ class CommitApiTest(HfApiCommonTest):
             item.path: item.last_commit
             for item in self._api.get_paths_info(
                 repo_id=repo_url.repo_id,
-                paths=["file.txt", "file2.txt", "file3.txt", "lfs.bin", "lfs2.bin", "lfs3.bin"],
+                paths=[
+                    "file.txt",
+                    "file2.txt",
+                    "file3.txt",
+                    "lfs.bin",
+                    "lfs2.bin",
+                    "lfs3.bin",
+                ],
                 expand=True,
             )
         }
@@ -1425,7 +1489,10 @@ class HfApiListRepoTreeTest(HfApiCommonTest):
     def test_list_tree(self):
         tree = list(self._api.list_repo_tree(repo_id=self.repo_id))
         self.assertEqual(len(tree), 6)
-        self.assertEqual({tree_obj.path for tree_obj in tree}, {"file.md", "lfs.bin", "1", "2", "3", ".gitattributes"})
+        self.assertEqual(
+            {tree_obj.path for tree_obj in tree},
+            {"file.md", "lfs.bin", "1", "2", "3", ".gitattributes"},
+        )
 
         tree = list(self._api.list_repo_tree(repo_id=self.repo_id, path_in_repo="1"))
         self.assertEqual(len(tree), 2)
@@ -1483,7 +1550,10 @@ class HfApiListRepoTreeTest(HfApiCommonTest):
         # check last_commit is present for a folder
         feature_extractor = next(tree_obj for tree_obj in tree if tree_obj.path == "feature_extractor")
         self.assertIsNotNone(feature_extractor.last_commit)
-        self.assertEqual(feature_extractor.last_commit["oid"], "47b62b20b20e06b9de610e840282b7e6c3d51190")
+        self.assertEqual(
+            feature_extractor.last_commit["oid"],
+            "47b62b20b20e06b9de610e840282b7e6c3d51190",
+        )
 
     @with_production_testing
     def test_list_files_without_expand(self):
@@ -1931,7 +2001,10 @@ class HfApiPublicProductionTest(unittest.TestCase):
         model = self._api.model_info(repo_id=DUMMY_MODEL_ID)
         self.assertIsInstance(model, ModelInfo)
         self.assertNotEqual(model.sha, DUMMY_MODEL_ID_REVISION_ONE_SPECIFIC_COMMIT)
-        self.assertEqual(model.created_at, datetime.datetime(2022, 3, 2, 23, 29, 5, tzinfo=datetime.timezone.utc))
+        self.assertEqual(
+            model.created_at,
+            datetime.datetime(2022, 3, 2, 23, 29, 5, tzinfo=datetime.timezone.utc),
+        )
 
         # One particular commit (not the top of `main`)
         model = self._api.model_info(repo_id=DUMMY_MODEL_ID, revision=DUMMY_MODEL_ID_REVISION_ONE_SPECIFIC_COMMIT)
@@ -1980,7 +2053,10 @@ class HfApiPublicProductionTest(unittest.TestCase):
                     "gitalyUid": "53c57f29a007fc728c968127061b7b740dcf2b1ad401d907f703b27658559413",
                     "likes": 0,
                     "private": False,
-                    "config": {"architectures": ["Wav2Vec2ForCTC"], "model_type": "wav2vec2"},
+                    "config": {
+                        "architectures": ["Wav2Vec2ForCTC"],
+                        "model_type": "wav2vec2",
+                    },
                     "downloads": 1,
                     "tags": [
                         "transformers",
@@ -2015,7 +2091,10 @@ class HfApiPublicProductionTest(unittest.TestCase):
 
     def test_model_info_expand_multiple(self):
         # Only the selected fields are returned
-        model = self._api.model_info(repo_id="HuggingFaceH4/zephyr-7b-beta", expand=["author", "downloadsAllTime"])
+        model = self._api.model_info(
+            repo_id="HuggingFaceH4/zephyr-7b-beta",
+            expand=["author", "downloadsAllTime"],
+        )
         assert model.author == "HuggingFaceH4"
         assert model.downloads is None
         assert model.downloads_all_time is not None
@@ -2310,7 +2389,10 @@ class HfApiPublicProductionTest(unittest.TestCase):
         # 17g is accepted and parsed correctly as a value
         # regression test for #753
         kwargs = {field.name: None for field in fields(ModelInfo) if field.init}
-        kwargs = {**kwargs, "card_data": ModelCardData(co2_eq_emissions={"emissions": "17g"})}
+        kwargs = {
+            **kwargs,
+            "card_data": ModelCardData(co2_eq_emissions={"emissions": "17g"}),
+        }
         model = ModelInfo(**kwargs)
         assert _is_emission_within_threshold(model, -1, 100)
 
@@ -2638,7 +2720,10 @@ class UploadFolderMockedTest(unittest.TestCase):
     def test_allow_txt_ignore_subdir(self):
         operations = self._upload_folder_alias(allow_patterns="*.txt", ignore_patterns="subdir/*")
         assert all(isinstance(op, CommitOperationAdd) for op in operations)
-        assert {op.path_in_repo for op in operations} == {"sub/file.txt", "file.txt"}  # only .txt files, not in subdir
+        assert {op.path_in_repo for op in operations} == {
+            "sub/file.txt",
+            "file.txt",
+        }  # only .txt files, not in subdir
 
     def test_allow_txt_not_root_ignore_subdir(self):
         operations = self._upload_folder_alias(allow_patterns="**/*.txt", ignore_patterns="subdir/*")
@@ -2673,17 +2758,25 @@ class UploadFolderMockedTest(unittest.TestCase):
 
     def test_delete_txt_in_sub(self):
         operations = self._upload_folder_alias(
-            path_in_repo="sub/", folder_path=self.cache_dir / "sub", delete_patterns="*.txt"
+            path_in_repo="sub/",
+            folder_path=self.cache_dir / "sub",
+            delete_patterns="*.txt",
         )
         added_files = {op.path_in_repo for op in operations if isinstance(op, CommitOperationAdd)}
         deleted_files = {op.path_in_repo for op in operations if isinstance(op, CommitOperationDelete)}
 
-        assert added_files == {"sub/file.txt", "sub/lfs_in_sub.bin"}  # added only in sub/
+        assert added_files == {
+            "sub/file.txt",
+            "sub/lfs_in_sub.bin",
+        }  # added only in sub/
         assert deleted_files == {"sub/file1.txt"}  # delete only in sub/
 
     def test_delete_txt_in_sub_ignore_sub_file_txt(self):
         operations = self._upload_folder_alias(
-            path_in_repo="sub", folder_path=self.cache_dir / "sub", ignore_patterns="file.txt", delete_patterns="*.txt"
+            path_in_repo="sub",
+            folder_path=self.cache_dir / "sub",
+            ignore_patterns="file.txt",
+            delete_patterns="*.txt",
         )
         added_files = {op.path_in_repo for op in operations if isinstance(op, CommitOperationAdd)}
         deleted_files = {op.path_in_repo for op in operations if isinstance(op, CommitOperationDelete)}
@@ -2729,7 +2822,11 @@ class HfLargefilesTest(HfApiCommonTest):
         self.setup_local_clone()
 
         subprocess.run(
-            ["wget", LARGE_FILE_18MB], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=self.cache_dir
+            ["wget", LARGE_FILE_18MB],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            cwd=self.cache_dir,
         )
         subprocess.run(["git", "add", "*"], check=True, cwd=self.cache_dir)
         subprocess.run(["git", "commit", "-m", "commit message"], check=True, cwd=self.cache_dir)
@@ -2774,13 +2871,25 @@ class HfLargefilesTest(HfApiCommonTest):
         self.setup_local_clone()
 
         subprocess.run(
-            ["wget", LARGE_FILE_18MB], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=self.cache_dir
+            ["wget", LARGE_FILE_18MB],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            cwd=self.cache_dir,
         )
         subprocess.run(
-            ["wget", LARGE_FILE_14MB], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=self.cache_dir
+            ["wget", LARGE_FILE_14MB],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            cwd=self.cache_dir,
         )
         subprocess.run(["git", "add", "*"], check=True, cwd=self.cache_dir)
-        subprocess.run(["git", "commit", "-m", "both files in same commit"], check=True, cwd=self.cache_dir)
+        subprocess.run(
+            ["git", "commit", "-m", "both files in same commit"],
+            check=True,
+            cwd=self.cache_dir,
+        )
         subprocess.run(["huggingface-cli", "lfs-enable-largefiles", self.cache_dir], check=True)
 
         start_time = time.time()
@@ -2798,7 +2907,11 @@ class HfLargefilesTest(HfApiCommonTest):
             "_upload_parts_iteratively",
             wraps=huggingface_hub.lfs._upload_parts_iteratively,
         ) as mock:
-            self._api.upload_file(repo_id=self.repo_id, path_or_fileobj=b"0" * 18 * 10**6, path_in_repo="lfs.bin")
+            self._api.upload_file(
+                repo_id=self.repo_id,
+                path_or_fileobj=b"0" * 18 * 10**6,
+                path_in_repo="lfs.bin",
+            )
             mock.assert_called_once()  # It used multipart upload
 
 
@@ -2881,7 +2994,8 @@ class HfApiDiscussionsTest(HfApiCommonTest):
         discussions_generator = self._api.get_repo_discussions(repo_id=self.repo_id)
         self.assertIsInstance(discussions_generator, types.GeneratorType)
         self.assertListEqual(
-            list([d.num for d in discussions_generator]), [self.discussion.num, self.pull_request.num]
+            list([d.num for d in discussions_generator]),
+            [self.discussion.num, self.pull_request.num],
         )
 
     def test_get_repo_discussion_by_type(self):
@@ -2896,7 +3010,8 @@ class HfApiDiscussionsTest(HfApiCommonTest):
         discussions_generator = self._api.get_repo_discussions(repo_id=self.repo_id, discussion_type="all")
         self.assertIsInstance(discussions_generator, types.GeneratorType)
         self.assertListEqual(
-            list([d.num for d in discussions_generator]), [self.discussion.num, self.pull_request.num]
+            list([d.num for d in discussions_generator]),
+            [self.discussion.num, self.pull_request.num],
         )
 
     def test_get_repo_discussion_by_author(self):
@@ -2918,7 +3033,8 @@ class HfApiDiscussionsTest(HfApiCommonTest):
         discussions_generator = self._api.get_repo_discussions(repo_id=self.repo_id, discussion_status="all")
         self.assertIsInstance(discussions_generator, types.GeneratorType)
         self.assertListEqual(
-            list([d.num for d in discussions_generator]), [self.discussion.num, self.pull_request.num]
+            list([d.num for d in discussions_generator]),
+            [self.discussion.num, self.pull_request.num],
         )
 
     @with_production_testing
@@ -2966,7 +3082,9 @@ class HfApiDiscussionsTest(HfApiCommonTest):
 
     def test_rename_discussion(self):
         rename_event = self._api.rename_discussion(
-            repo_id=self.repo_id, discussion_num=self.discussion.num, new_title="New title2"
+            repo_id=self.repo_id,
+            discussion_num=self.discussion.num,
+            new_title="New title2",
         )
         retrieved = self._api.get_discussion_details(repo_id=self.repo_id, discussion_num=self.discussion.num)
         self.assertIn(rename_event.id, (event.id for event in retrieved.events))
@@ -2975,7 +3093,9 @@ class HfApiDiscussionsTest(HfApiCommonTest):
 
     def test_change_discussion_status(self):
         status_change_event = self._api.change_discussion_status(
-            repo_id=self.repo_id, discussion_num=self.discussion.num, new_status="closed"
+            repo_id=self.repo_id,
+            discussion_num=self.discussion.num,
+            new_status="closed",
         )
         retrieved = self._api.get_discussion_details(repo_id=self.repo_id, discussion_num=self.discussion.num)
         self.assertIn(status_change_event.id, (event.id for event in retrieved.events))
@@ -2983,7 +3103,9 @@ class HfApiDiscussionsTest(HfApiCommonTest):
 
         with self.assertRaises(ValueError):
             self._api.change_discussion_status(
-                repo_id=self.repo_id, discussion_num=self.discussion.num, new_status="published"
+                repo_id=self.repo_id,
+                discussion_num=self.discussion.num,
+                new_status="published",
             )
 
     def test_merge_pull_request(self):
@@ -2994,7 +3116,9 @@ class HfApiDiscussionsTest(HfApiCommonTest):
             revision=self.pull_request.git_reference,
         )
         self._api.change_discussion_status(
-            repo_id=self.repo_id, discussion_num=self.pull_request.num, new_status="open"
+            repo_id=self.repo_id,
+            discussion_num=self.pull_request.num,
+            new_status="open",
         )
         self._api.merge_pull_request(self.repo_id, self.pull_request.num)
 
@@ -3052,7 +3176,12 @@ class TestSquashHistory(HfApiCommonTest):
 
         # Upload file on a new branch
         self._api.create_branch(repo_id=repo_id, branch="v0.1", exist_ok=True)
-        self._api.upload_file(repo_id=repo_id, path_in_repo="file.txt", path_or_fileobj=b"foo", revision="v0.1")
+        self._api.upload_file(
+            repo_id=repo_id,
+            path_in_repo="file.txt",
+            path_or_fileobj=b"foo",
+            revision="v0.1",
+        )
 
         # Squash history on main
         self._api.super_squash_history(repo_id=repo_id)
@@ -3085,13 +3214,22 @@ class TestSquashHistory(HfApiCommonTest):
 
         # Upload + update file on PR
         self._api.upload_file(
-            repo_id=repo_id, path_in_repo="file.txt", path_or_fileobj=b"content", revision=pr.git_reference
+            repo_id=repo_id,
+            path_in_repo="file.txt",
+            path_or_fileobj=b"content",
+            revision=pr.git_reference,
         )
         self._api.upload_file(
-            repo_id=repo_id, path_in_repo="lfs.bin", path_or_fileobj=b"content", revision=pr.git_reference
+            repo_id=repo_id,
+            path_in_repo="lfs.bin",
+            path_or_fileobj=b"content",
+            revision=pr.git_reference,
         )
         self._api.upload_file(
-            repo_id=repo_id, path_in_repo="file.txt", path_or_fileobj=b"another_content", revision=pr.git_reference
+            repo_id=repo_id,
+            path_in_repo="file.txt",
+            path_or_fileobj=b"another_content",
+            revision=pr.git_reference,
         )
 
         # Squash history PR
@@ -3126,7 +3264,9 @@ iface.launch()
         super().setUp()
 
         # If generating new VCR => use personal token and REMOVE IT from the VCR
-        self.repo_id = "user/tmp_test_space"  # no need to be unique as it's a VCRed test
+        self.repo_id = (
+            "user/tmp_test_space"  # no need to be unique as it's a VCRed test
+        )
         self.api = HfApi(token="hf_fake_token", endpoint=ENDPOINT_PRODUCTION)
 
         # Create a Space
@@ -3216,7 +3356,12 @@ iface.launch()
     @with_production_testing
     def test_pause_and_restart_space(self) -> None:
         # Upload a fake app.py file
-        self.api.upload_file(path_or_fileobj=b"", path_in_repo="app.py", repo_id=self.repo_id, repo_type="space")
+        self.api.upload_file(
+            path_or_fileobj=b"",
+            path_in_repo="app.py",
+            repo_id=self.repo_id,
+            repo_type="space",
+        )
 
         # Wait for the Space to be "BUILDING"
         count = 0
@@ -3251,13 +3396,24 @@ class TestCommitInBackground(HfApiCommonTest):
 
         t0 = time.time()
         upload_future_1 = self._api.upload_file(
-            path_or_fileobj=b"1", path_in_repo="1.txt", repo_id=repo_id, commit_message="Upload 1", run_as_future=True
+            path_or_fileobj=b"1",
+            path_in_repo="1.txt",
+            repo_id=repo_id,
+            commit_message="Upload 1",
+            run_as_future=True,
         )
         upload_future_2 = self._api.upload_file(
-            path_or_fileobj=b"2", path_in_repo="2.txt", repo_id=repo_id, commit_message="Upload 2", run_as_future=True
+            path_or_fileobj=b"2",
+            path_in_repo="2.txt",
+            repo_id=repo_id,
+            commit_message="Upload 2",
+            run_as_future=True,
         )
         upload_future_3 = self._api.upload_folder(
-            repo_id=repo_id, folder_path=self.cache_dir, commit_message="Upload folder", run_as_future=True
+            repo_id=repo_id,
+            folder_path=self.cache_dir,
+            commit_message="Upload folder",
+            run_as_future=True,
         )
         t1 = time.time()
 
@@ -3485,11 +3641,19 @@ class TestSpaceAPIMocked(unittest.TestCase):
             repo_type="space",
             space_sdk="gradio",
             space_secrets=[
-                {"key": "Testsecret", "value": "Testvalue", "description": "Testdescription"},
+                {
+                    "key": "Testsecret",
+                    "value": "Testvalue",
+                    "description": "Testdescription",
+                },
                 {"key": "Testsecret2", "value": "Testvalue"},
             ],
             space_variables=[
-                {"key": "Testvariable", "value": "Testvalue", "description": "Testdescription"},
+                {
+                    "key": "Testvariable",
+                    "value": "Testvalue",
+                    "description": "Testdescription",
+                },
                 {"key": "Testvariable2", "value": "Testvalue"},
             ],
         )
@@ -3502,11 +3666,19 @@ class TestSpaceAPIMocked(unittest.TestCase):
                 "type": "space",
                 "sdk": "gradio",
                 "secrets": [
-                    {"key": "Testsecret", "value": "Testvalue", "description": "Testdescription"},
+                    {
+                        "key": "Testsecret",
+                        "value": "Testvalue",
+                        "description": "Testdescription",
+                    },
                     {"key": "Testsecret2", "value": "Testvalue"},
                 ],
                 "variables": [
-                    {"key": "Testvariable", "value": "Testvalue", "description": "Testdescription"},
+                    {
+                        "key": "Testvariable",
+                        "value": "Testvalue",
+                        "description": "Testdescription",
+                    },
                     {"key": "Testvariable2", "value": "Testvalue"},
                 ],
             },
@@ -3521,11 +3693,19 @@ class TestSpaceAPIMocked(unittest.TestCase):
             storage=SpaceStorage.LARGE,
             sleep_time=123,
             secrets=[
-                {"key": "Testsecret", "value": "Testvalue", "description": "Testdescription"},
+                {
+                    "key": "Testsecret",
+                    "value": "Testvalue",
+                    "description": "Testdescription",
+                },
                 {"key": "Testsecret2", "value": "Testvalue"},
             ],
             variables=[
-                {"key": "Testvariable", "value": "Testvalue", "description": "Testdescription"},
+                {
+                    "key": "Testvariable",
+                    "value": "Testvalue",
+                    "description": "Testdescription",
+                },
                 {"key": "Testvariable2", "value": "Testvalue"},
             ],
         )
@@ -3539,11 +3719,19 @@ class TestSpaceAPIMocked(unittest.TestCase):
                 "storageTier": "large",
                 "sleepTimeSeconds": 123,
                 "secrets": [
-                    {"key": "Testsecret", "value": "Testvalue", "description": "Testdescription"},
+                    {
+                        "key": "Testsecret",
+                        "value": "Testvalue",
+                        "description": "Testdescription",
+                    },
                     {"key": "Testsecret2", "value": "Testvalue"},
                 ],
                 "variables": [
-                    {"key": "Testvariable", "value": "Testvalue", "description": "Testdescription"},
+                    {
+                        "key": "Testvariable",
+                        "value": "Testvalue",
+                        "description": "Testdescription",
+                    },
                     {"key": "Testvariable2", "value": "Testvalue"},
                 ],
             },
@@ -3655,7 +3843,12 @@ class ListGitCommitsTest(unittest.TestCase):
         cls.api.upload_file(repo_id=cls.repo_id, path_or_fileobj=b"content", path_in_repo="content.txt")
 
         # Create a commit in a PR
-        cls.api.upload_file(repo_id=cls.repo_id, path_or_fileobj=b"on_pr", path_in_repo="on_pr.txt", create_pr=True)
+        cls.api.upload_file(
+            repo_id=cls.repo_id,
+            path_or_fileobj=b"on_pr",
+            path_in_repo="on_pr.txt",
+            create_pr=True,
+        )
 
         # Create another commit on `main` branch
         cls.api.upload_file(repo_id=cls.repo_id, path_or_fileobj=b"on_main", path_in_repo="on_main.txt")
@@ -3825,7 +4018,11 @@ class RepoUrlTest(unittest.TestCase):
                 self.assertEqual(url.repo_type, "model")
 
     def test_repo_url_canonical_dataset(self):
-        for _id in ("datasets/squad", "hf://datasets/squad", "https://huggingface.co/datasets/squad"):
+        for _id in (
+            "datasets/squad",
+            "hf://datasets/squad",
+            "https://huggingface.co/datasets/squad",
+        ):
             with self.subTest(_id):
                 url = RepoUrl(_id)
                 self.assertEqual(url.repo_id, "squad")
@@ -3893,7 +4090,9 @@ class CollectionAPITest(HfApiCommonTest):
         id = uuid.uuid4()
         self.title = f"My cool stuff {id}"
         self.slug_prefix = f"{USER}/my-cool-stuff-{id}"
-        self.slug: Optional[str] = None  # Populated by the tests => use to delete in tearDown
+        self.slug: Optional[str] = (
+            None  # Populated by the tests => use to delete in tearDown
+        )
         return super().setUp()
 
     def tearDown(self) -> None:
@@ -4035,7 +4234,10 @@ class CollectionAPITest(HfApiCommonTest):
 
         # Update first item
         self._api.update_collection_item(
-            collection.slug, collection.items[0].item_object_id, note="New note", position=1
+            collection.slug,
+            collection.items[0].item_object_id,
+            note="New note",
+            position=1,
         )
 
         # Check consistency
@@ -4207,7 +4409,10 @@ class WebhookApiTest(HfApiCommonTest):
 
         # Create a webhook to be used in the tests
         self.webhook = self._api.create_webhook(
-            url=self.webhook_url, watched=self.watched_items, domains=self.domains, secret=self.secret
+            url=self.webhook_url,
+            watched=self.watched_items,
+            domains=self.domains,
+            secret=self.secret,
         )
 
     def tearDown(self) -> None:
@@ -4227,7 +4432,10 @@ class WebhookApiTest(HfApiCommonTest):
 
     def test_create_webhook(self) -> None:
         new_webhook = self._api.create_webhook(
-            url=self.webhook_url, watched=self.watched_items, domains=self.domains, secret=self.secret
+            url=self.webhook_url,
+            watched=self.watched_items,
+            domains=self.domains,
+            secret=self.secret,
         )
         self.assertIsInstance(new_webhook, WebhookInfo)
         self.assertEqual(new_webhook.url, self.webhook_url)
@@ -4238,7 +4446,11 @@ class WebhookApiTest(HfApiCommonTest):
     def test_update_webhook(self) -> None:
         updated_url = "https://webhook.site/new"
         updated_webhook = self._api.update_webhook(
-            self.webhook.id, url=updated_url, watched=self.watched_items, domains=self.domains, secret=self.secret
+            self.webhook.id,
+            url=updated_url,
+            watched=self.watched_items,
+            domains=self.domains,
+            secret=self.secret,
         )
         self.assertEqual(updated_webhook.url, updated_url)
 
@@ -4253,7 +4465,10 @@ class WebhookApiTest(HfApiCommonTest):
     def test_delete_webhook(self) -> None:
         # Create another webhook to test deletion
         webhook_to_delete = self._api.create_webhook(
-            url=self.webhook_url, watched=self.watched_items, domains=self.domains, secret=self.secret
+            url=self.webhook_url,
+            watched=self.watched_items,
+            domains=self.domains,
+            secret=self.secret,
         )
         self._api.delete_webhook(webhook_to_delete.id)
         with self.assertRaises(HTTPError):
@@ -4330,7 +4545,10 @@ class TestLargeUpload(HfApiCommonTest):
 
             # Upload the folder
             self._api.upload_large_folder(
-                repo_id=repo_url.repo_id, repo_type=repo_url.repo_type, folder_path=folder, num_workers=4
+                repo_id=repo_url.repo_id,
+                repo_type=repo_url.repo_type,
+                folder_path=folder,
+                num_workers=4,
             )
 
         # Check all files have been uploaded
