@@ -1,5 +1,5 @@
 Source: python3-huggingface-hub
-Section: python
+Section: python3
 Priority: optional
 Maintainer: anudeep <f20212776@goa.bits-pilani.ac.in>
 Rules-Requires-Root: no
