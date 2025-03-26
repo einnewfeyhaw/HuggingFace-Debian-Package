@@ -24,10 +24,10 @@ Build-Depends:
  python3-pillow,
 Standards-Version: 4.7.2
 Homepage: https://github.com/huggingface/huggingface_hub
-Package: python3-huggingface-hub
 #Vcs-Browser: https://salsa.debian.org/debian/python3-huggingface-hub
 #Vcs-Git: https://salsa.debian.org/debian/python3-huggingface-hub.git
 
+Package: python3-huggingface-hub
 Architecture: any
 Depends:
  ${shlibs:Depends},
