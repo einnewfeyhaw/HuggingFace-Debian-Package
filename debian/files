@@ -1,2 +1,2 @@
-python3-huggingface-hub_0.29.3-1_arm64.buildinfo python3 optional
-python3-huggingface-hub_0.29.3-1_arm64.deb python3 optional
+python3-huggingface-hub_0.29.3-1_arm64.buildinfo python3-library optional
+python3-huggingface-hub_0.29.3-1_arm64.deb python3-library optional
