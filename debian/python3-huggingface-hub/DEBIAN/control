@@ -3,7 +3,7 @@ Version: 0.29.3-1
 Architecture: arm64
 Maintainer: anudeep <f20212776@goa.bits-pilani.ac.in>
 Installed-Size: 9
-Section: python3-library
+Section: python3
 Priority: optional
 Homepage: https://github.com/huggingface/huggingface_hub
 Description: Python library for HuggingFace Hub
