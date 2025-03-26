@@ -1,25 +1,23 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Source: <url://example.com>
-Upstream-Name: python3-huggingface-hub
-Upstream-Contact: <preferred name and address to reach the upstream project>
+Source: https://github.com/huggingface/huggingface_hub
+Upstream-Name: huggingface-hub
+Upstream-Contact: HuggingFace Team <contact@huggingface.co>
 
 Files:
  *
 Copyright:
- <years> <put author's name and email here>
- <years> <likewise for another author>
-License: <special license>
- <Put the license of the package here indented by 1 space>
- <This follows the format of Description: lines in control file>
- .
- <Including paragraphs>
+ 2020-2025 HuggingFace Team
+License: 
+ Apache-2.0
+ This software is licensed under Apaache 2.0 license.
+ See the LICENSE file for full details.
 
 # If you want to use GPL v2 or later for the /debian/* files use
 # the following clauses, or change it to suit. Delete these two lines
 Files:
  debian/*
 Copyright:
- 2025 anudeep <anudeep@unknown>
+ 2025 anudeep <f20212776@goa.bits-pilani.ac.in>
 License: GPL-2+
  This package is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by

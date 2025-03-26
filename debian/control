@@ -1,7 +1,7 @@
-Source: python3-huggingface-hub
-Section: unknown
+Source: huggingface-hub
+Section: python3
 Priority: optional
-Maintainer: anudeep <anudeep@unknown>
+Maintainer: anudeep <f20212776@goa.bits-pilani.ac.in>
 Rules-Requires-Root: no
 Build-Depends:
  debhelper-compat (= 13),
@@ -23,7 +23,7 @@ Build-Depends:
  python3-inquirerpy,
  python3-pillow,
 Standards-Version: 4.7.2
-Homepage: <insert the upstream URL, if relevant>
+Homepage: https://github.com/huggingface/huggingface_hub
 #Vcs-Browser: https://salsa.debian.org/debian/python3-huggingface-hub
 #Vcs-Git: https://salsa.debian.org/debian/python3-huggingface-hub.git
 
@@ -32,5 +32,6 @@ Architecture: any
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
-Description: <insert up to 60 chars description>
- <Insert long description, indented with spaces.>
+Description: Python library for HuggingFace Hub 
+The huggingface-hub library provides access to the HuggingFace Hub,
+allowing users to download and upload models,datasets and more.
