@@ -11,13 +11,7 @@ from huggingface_hub.errors import (
     RepositoryNotFoundError,
     RevisionNotFoundError,
 )
-from huggingface_hub.utils._http import (
-    REPO_API_REGEX,
-    X_AMZN_TRACE_ID,
-    X_REQUEST_ID,
-    _format,
-    hf_raise_for_status,
-)
+from huggingface_hub.utils._http import REPO_API_REGEX, X_AMZN_TRACE_ID, X_REQUEST_ID, _format, hf_raise_for_status
 
 
 class TestErrorUtils(unittest.TestCase):
@@ -33,10 +27,7 @@ class TestErrorUtils(unittest.TestCase):
 
     def test_hf_raise_for_status_disabled_repo(self) -> None:
         response = Response()
-        response.headers = {
-            "X-Error-Message": "Access to this resource is disabled.",
-            X_REQUEST_ID: 123,
-        }
+        response.headers = {"X-Error-Message": "Access to this resource is disabled.", X_REQUEST_ID: 123}
 
         response.status_code = 403
         with self.assertRaises(DisabledRepoError) as context:
@@ -59,10 +50,7 @@ class TestErrorUtils(unittest.TestCase):
 
     def test_hf_raise_for_status_401_repo_url_invalid_token(self) -> None:
         response = Response()
-        response.headers = {
-            X_REQUEST_ID: 123,
-            "X-Error-Message": "Invalid credentials in Authorization header",
-        }
+        response.headers = {X_REQUEST_ID: 123, "X-Error-Message": "Invalid credentials in Authorization header"}
         response.status_code = 401
         response.request = PreparedRequest()
         response.request.url = "https://huggingface.co/api/models/username/reponame"
@@ -74,10 +62,7 @@ class TestErrorUtils(unittest.TestCase):
 
     def test_hf_raise_for_status_403_wrong_token_scope(self) -> None:
         response = Response()
-        response.headers = {
-            X_REQUEST_ID: 123,
-            "X-Error-Message": "specific error message",
-        }
+        response.headers = {X_REQUEST_ID: 123, "X-Error-Message": "specific error message"}
         response.status_code = 403
         response.request = PreparedRequest()
         response.request.url = "https://huggingface.co/api/repos/create"
@@ -178,28 +163,16 @@ class TestHfHubHTTPError(unittest.TestCase):
     def test_hf_hub_http_error_init_with_request_id_and_multiline_message(self) -> None:
         """Test request id is added to the end of the first line."""
         self.response.headers = {X_REQUEST_ID: "test-id"}
-        error = _format(
-            HfHubHTTPError,
-            "this is a message\nthis is more details",
-            response=self.response,
-        )
+        error = _format(HfHubHTTPError, "this is a message\nthis is more details", response=self.response)
         assert str(error) == "this is a message (Request ID: test-id)\nthis is more details"
 
-        error = _format(
-            HfHubHTTPError,
-            "this is a message\n\nthis is more details",
-            response=self.response,
-        )
+        error = _format(HfHubHTTPError, "this is a message\n\nthis is more details", response=self.response)
         assert str(error) == "this is a message (Request ID: test-id)\n\nthis is more details"
 
     def test_hf_hub_http_error_init_with_request_id_already_in_message(self) -> None:
         """Test request id is not duplicated in error message (case insensitive)"""
         self.response.headers = {X_REQUEST_ID: "test-id"}
-        error = _format(
-            HfHubHTTPError,
-            "this is a message on request TEST-ID",
-            response=self.response,
-        )
+        error = _format(HfHubHTTPError, "this is a message on request TEST-ID", response=self.response)
         assert str(error) == "this is a message on request TEST-ID"
         assert error.request_id == "test-id"
 
@@ -262,12 +235,7 @@ class TestHfHubHTTPError(unittest.TestCase):
         error.args = error.args + (1, 2, 3)  # faking some extra args
 
         error.append_to_message("\nthis is an additional message")
-        assert error.args == (
-            "this is a message\nthis is an additional message",
-            1,
-            2,
-            3,
-        )
+        assert error.args == ("this is a message\nthis is an additional message", 1, 2, 3)
 
         assert error.server_message is None  # added message is not from server
 
@@ -310,10 +278,7 @@ class TestHfHubHTTPError(unittest.TestCase):
 
     def test_hf_hub_http_error_with_request_id_and_amzn_trace_id(self) -> None:
         """Test request id is not duplicated in error message (case insensitive)"""
-        self.response.headers = {
-            X_AMZN_TRACE_ID: "test-trace-id",
-            X_REQUEST_ID: "test-id",
-        }
+        self.response.headers = {X_AMZN_TRACE_ID: "test-trace-id", X_REQUEST_ID: "test-id"}
         error = _format(HfHubHTTPError, "this is a message", response=self.response)
         assert str(error) == "this is a message (Request ID: test-id)"
         assert error.request_id == "test-id"
@@ -346,16 +311,10 @@ class TestHfHubHTTPError(unittest.TestCase):
         ("https://hub-ci.huggingface.co/api/spaces/repo_id", True),
         # /resolve Endpoint => True
         ("https://huggingface.co/gpt2/resolve/main/README.md", True),
-        (
-            "https://huggingface.co/datasets/google/fleurs/resolve/revision/README.md",
-            True,
-        ),
+        ("https://huggingface.co/datasets/google/fleurs/resolve/revision/README.md", True),
         # Regression tests
         ("https://huggingface.co/bert-base/resolve/main/pytorch_model.bin", True),
-        (
-            "https://hub-ci.huggingface.co/__DUMMY_USER__/repo-1470b5/resolve/main/file.txt",
-            True,
-        ),
+        ("https://hub-ci.huggingface.co/__DUMMY_USER__/repo-1470b5/resolve/main/file.txt", True),
     ],
 )
 def test_repo_api_regex(url: str, should_match: bool) -> None:

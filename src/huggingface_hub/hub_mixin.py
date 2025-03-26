@@ -3,19 +3,7 @@ import json
 import os
 from dataclasses import Field, asdict, dataclass, is_dataclass
 from pathlib import Path
-from typing import (
-    Any,
-    Callable,
-    ClassVar,
-    Dict,
-    List,
-    Optional,
-    Protocol,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-)
+from typing import Any, Callable, ClassVar, Dict, List, Optional, Protocol, Tuple, Type, TypeVar, Union
 
 import packaging.version
 

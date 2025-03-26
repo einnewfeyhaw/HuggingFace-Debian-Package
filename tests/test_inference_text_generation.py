@@ -18,9 +18,7 @@ from huggingface_hub.inference._common import (
     OverloadedError,
     raise_text_generation_error,
 )
-from huggingface_hub.inference._common import (
-    ValidationError as TextGenerationValidationError,
-)
+from huggingface_hub.inference._common import ValidationError as TextGenerationValidationError
 
 from .testing_utils import with_production_testing
 
@@ -84,12 +82,7 @@ class TestTextGenerationClientVCR(unittest.TestCase):
 
     def test_generate_best_of(self):
         response = self.client.text_generation(
-            "test",
-            max_new_tokens=1,
-            best_of=2,
-            do_sample=True,
-            decoder_input_details=True,
-            details=True,
+            "test", max_new_tokens=1, best_of=2, do_sample=True, decoder_input_details=True, details=True
         )
 
         assert response.details.seed is not None
@@ -149,10 +142,7 @@ class TestTextGenerationClientVCR(unittest.TestCase):
         # Regression test for https://github.com/huggingface/huggingface_hub/issues/2135
         with self.assertWarnsRegex(UserWarning, "Ignoring following parameters: return_full_text"):
             text = self.client.text_generation(
-                prompt="How are you today?",
-                max_new_tokens=20,
-                model="google/flan-t5-large",
-                return_full_text=True,
+                prompt="How are you today?", max_new_tokens=20, model="google/flan-t5-large", return_full_text=True
             )
         assert text == "I am at work"
 

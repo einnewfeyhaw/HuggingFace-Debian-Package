@@ -29,6 +29,6 @@ import sys
 
 
 _kwargs = {"usedforsecurity": False} if sys.version_info >= (3, 9) else {}
-md5 = functools.partial(hashlib.md5, **_kwargs)  # type: ignore[arg-type]
-sha1 = functools.partial(hashlib.sha1, **_kwargs)  # type: ignore[arg-type]
-sha256 = functools.partial(hashlib.sha256, **_kwargs)  # type: ignore[arg-type]
+md5 = functools.partial(hashlib.md5, **_kwargs)
+sha1 = functools.partial(hashlib.sha1, **_kwargs)
+sha256 = functools.partial(hashlib.sha256, **_kwargs)

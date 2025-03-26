@@ -25,10 +25,7 @@ class SnapshotDownloadTests(unittest.TestCase):
             repo_id=cls.repo_id,
             operations=[
                 CommitOperationAdd(path_in_repo="dummy_file.txt", path_or_fileobj=b"v1"),
-                CommitOperationAdd(
-                    path_in_repo="subpath/file.txt",
-                    path_or_fileobj=b"content in subpath",
-                ),
+                CommitOperationAdd(path_in_repo="subpath/file.txt", path_or_fileobj=b"content in subpath"),
             ],
             commit_message="Add file to main branch",
         ).oid
@@ -142,10 +139,7 @@ class SnapshotDownloadTests(unittest.TestCase):
             snapshot_download(self.repo_id, revision=self.first_commit_hash, cache_dir=tmpdir)
             # now load from cache
             storage_folder = snapshot_download(
-                self.repo_id,
-                revision=self.first_commit_hash,
-                cache_dir=tmpdir,
-                local_files_only=True,
+                self.repo_id, revision=self.first_commit_hash, cache_dir=tmpdir, local_files_only=True
             )
             self.assertTrue(self.first_commit_hash in storage_folder)  # has expected revision
 

@@ -33,36 +33,21 @@ class TestSendTelemetry(unittest.TestCase):
         queue.join()  # Wait for the telemetry tasks to be completed
 
         self.assertEqual(self.mock_head.call_count, 3)  # 3 calls and order is preserved
-        self.assertEqual(
-            self.mock_head.call_args_list[0][0][0],
-            f"{ENDPOINT_STAGING}/api/telemetry/example1",
-        )
-        self.assertEqual(
-            self.mock_head.call_args_list[1][0][0],
-            f"{ENDPOINT_STAGING}/api/telemetry/example2",
-        )
-        self.assertEqual(
-            self.mock_head.call_args_list[2][0][0],
-            f"{ENDPOINT_STAGING}/api/telemetry/example3",
-        )
+        self.assertEqual(self.mock_head.call_args_list[0][0][0], f"{ENDPOINT_STAGING}/api/telemetry/example1")
+        self.assertEqual(self.mock_head.call_args_list[1][0][0], f"{ENDPOINT_STAGING}/api/telemetry/example2")
+        self.assertEqual(self.mock_head.call_args_list[2][0][0], f"{ENDPOINT_STAGING}/api/telemetry/example3")
 
     def test_topic_with_subtopic(self, queue: Queue) -> None:
         send_telemetry(topic="gradio/image/this_one")
         queue.join()  # Wait for the telemetry tasks to be completed
         self.mock_head.assert_called_once()
-        self.assertEqual(
-            self.mock_head.call_args[0][0],
-            f"{ENDPOINT_STAGING}/api/telemetry/gradio/image/this_one",
-        )
+        self.assertEqual(self.mock_head.call_args[0][0], f"{ENDPOINT_STAGING}/api/telemetry/gradio/image/this_one")
 
     def test_topic_quoted(self, queue: Queue) -> None:
         send_telemetry(topic="foo bar")
         queue.join()  # Wait for the telemetry tasks to be completed
         self.mock_head.assert_called_once()
-        self.assertEqual(
-            self.mock_head.call_args[0][0],
-            f"{ENDPOINT_STAGING}/api/telemetry/foo%20bar",
-        )
+        self.assertEqual(self.mock_head.call_args[0][0], f"{ENDPOINT_STAGING}/api/telemetry/foo%20bar")
 
     @patch("huggingface_hub.utils._telemetry.constants.HF_HUB_OFFLINE", True)
     def test_hub_offline(self, queue: Queue) -> None:

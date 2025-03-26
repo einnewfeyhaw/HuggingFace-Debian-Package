@@ -36,17 +36,7 @@ import base64
 import logging
 import re
 import warnings
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Iterable,
-    List,
-    Literal,
-    Optional,
-    Union,
-    overload,
-)
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Literal, Optional, Union, overload
 
 from requests import HTTPError
 
@@ -110,11 +100,7 @@ from huggingface_hub.inference._generated.types import (
     ZeroShotClassificationOutputElement,
     ZeroShotImageClassificationOutputElement,
 )
-from huggingface_hub.inference._providers import (
-    PROVIDER_T,
-    HFInferenceTask,
-    get_provider_helper,
-)
+from huggingface_hub.inference._providers import PROVIDER_T, HFInferenceTask, get_provider_helper
 from huggingface_hub.utils import build_hf_headers, get_session, hf_raise_for_status
 from huggingface_hub.utils._deprecation import _deprecate_arguments, _deprecate_method
 
@@ -223,8 +209,7 @@ class InferenceClient:
         model: Optional[str] = None,
         task: Optional[str] = None,
         stream: Literal[False] = ...,
-    ) -> bytes:
-        ...
+    ) -> bytes: ...
 
     @overload
     def post(  # type: ignore[misc]
@@ -235,8 +220,7 @@ class InferenceClient:
         model: Optional[str] = None,
         task: Optional[str] = None,
         stream: Literal[True] = ...,
-    ) -> Iterable[bytes]:
-        ...
+    ) -> Iterable[bytes]: ...
 
     @overload
     def post(
@@ -247,8 +231,7 @@ class InferenceClient:
         model: Optional[str] = None,
         task: Optional[str] = None,
         stream: bool = False,
-    ) -> Union[bytes, Iterable[bytes]]:
-        ...
+    ) -> Union[bytes, Iterable[bytes]]: ...
 
     @_deprecate_method(
         version="0.31.0",
@@ -297,20 +280,17 @@ class InferenceClient:
     @overload
     def _inner_post(  # type: ignore[misc]
         self, request_parameters: RequestParameters, *, stream: Literal[False] = ...
-    ) -> bytes:
-        ...
+    ) -> bytes: ...
 
     @overload
     def _inner_post(  # type: ignore[misc]
         self, request_parameters: RequestParameters, *, stream: Literal[True] = ...
-    ) -> Iterable[bytes]:
-        ...
+    ) -> Iterable[bytes]: ...
 
     @overload
     def _inner_post(
         self, request_parameters: RequestParameters, *, stream: bool = False
-    ) -> Union[bytes, Iterable[bytes]]:
-        ...
+    ) -> Union[bytes, Iterable[bytes]]: ...
 
     def _inner_post(
         self, request_parameters: RequestParameters, *, stream: bool = False
@@ -526,8 +506,7 @@ class InferenceClient:
         top_logprobs: Optional[int] = None,
         top_p: Optional[float] = None,
         extra_body: Optional[Dict] = None,
-    ) -> ChatCompletionOutput:
-        ...
+    ) -> ChatCompletionOutput: ...
 
     @overload
     def chat_completion(  # type: ignore
@@ -553,8 +532,7 @@ class InferenceClient:
         top_logprobs: Optional[int] = None,
         top_p: Optional[float] = None,
         extra_body: Optional[Dict] = None,
-    ) -> Iterable[ChatCompletionStreamOutput]:
-        ...
+    ) -> Iterable[ChatCompletionStreamOutput]: ...
 
     @overload
     def chat_completion(
@@ -580,8 +558,7 @@ class InferenceClient:
         top_logprobs: Optional[int] = None,
         top_p: Optional[float] = None,
         extra_body: Optional[Dict] = None,
-    ) -> Union[ChatCompletionOutput, Iterable[ChatCompletionStreamOutput]]:
-        ...
+    ) -> Union[ChatCompletionOutput, Iterable[ChatCompletionStreamOutput]]: ...
 
     def chat_completion(
         self,
@@ -1435,11 +1412,7 @@ class InferenceClient:
         return output[0] if isinstance(output, list) else output
 
     def object_detection(
-        self,
-        image: ContentT,
-        *,
-        model: Optional[str] = None,
-        threshold: Optional[float] = None,
+        self, image: ContentT, *, model: Optional[str] = None, threshold: Optional[float] = None
     ) -> List[ObjectDetectionOutputElement]:
         """
         Perform object detection on the given image using the specified model.
@@ -1734,12 +1707,7 @@ class InferenceClient:
         provider_helper = get_provider_helper(self.provider, task="table-question-answering")
         request_parameters = provider_helper.prepare_request(
             inputs=None,
-            parameters={
-                "model": model,
-                "padding": padding,
-                "sequential": sequential,
-                "truncation": truncation,
-            },
+            parameters={"model": model, "padding": padding, "sequential": sequential, "truncation": truncation},
             extra_payload={"query": query, "table": table},
             headers=self.headers,
             model=model or self.model,
@@ -1936,8 +1904,7 @@ class InferenceClient:
         truncate: Optional[int] = None,
         typical_p: Optional[float] = None,
         watermark: Optional[bool] = None,
-    ) -> str:
-        ...
+    ) -> str: ...
 
     @overload
     def text_generation(  # type: ignore
@@ -1967,8 +1934,7 @@ class InferenceClient:
         truncate: Optional[int] = None,
         typical_p: Optional[float] = None,
         watermark: Optional[bool] = None,
-    ) -> TextGenerationOutput:
-        ...
+    ) -> TextGenerationOutput: ...
 
     @overload
     def text_generation(  # type: ignore
@@ -1998,8 +1964,7 @@ class InferenceClient:
         truncate: Optional[int] = None,
         typical_p: Optional[float] = None,
         watermark: Optional[bool] = None,
-    ) -> Iterable[str]:
-        ...
+    ) -> Iterable[str]: ...
 
     @overload
     def text_generation(  # type: ignore
@@ -2029,8 +1994,7 @@ class InferenceClient:
         truncate: Optional[int] = None,
         typical_p: Optional[float] = None,
         watermark: Optional[bool] = None,
-    ) -> Iterable[TextGenerationStreamOutput]:
-        ...
+    ) -> Iterable[TextGenerationStreamOutput]: ...
 
     @overload
     def text_generation(
@@ -2060,8 +2024,7 @@ class InferenceClient:
         truncate: Optional[int] = None,
         typical_p: Optional[float] = None,
         watermark: Optional[bool] = None,
-    ) -> Union[TextGenerationOutput, Iterable[TextGenerationStreamOutput]]:
-        ...
+    ) -> Union[TextGenerationOutput, Iterable[TextGenerationStreamOutput]]: ...
 
     def text_generation(
         self,
@@ -3359,8 +3322,7 @@ class InferenceClient:
 
         for framework in frameworks:
             response = get_session().get(
-                f"{constants.INFERENCE_ENDPOINT}/framework/{framework}",
-                headers=build_hf_headers(token=self.token),
+                f"{constants.INFERENCE_ENDPOINT}/framework/{framework}", headers=build_hf_headers(token=self.token)
             )
             hf_raise_for_status(response)
             _unpack_response(framework, response.json())

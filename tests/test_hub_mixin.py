@@ -245,9 +245,7 @@ class HubMixinTest(unittest.TestCase):
         model = DummyModelWithKwargs()
         model.save_pretrained(self.cache_dir)
         with patch.object(
-            DummyModelWithKwargs,
-            "_from_pretrained",
-            return_value=DummyModelWithKwargs(),
+            DummyModelWithKwargs, "_from_pretrained", return_value=DummyModelWithKwargs()
         ) as from_pretrained_mock:
             model = DummyModelWithKwargs.from_pretrained(self.cache_dir)
             assert "config" not in from_pretrained_mock.call_args_list[0].kwargs

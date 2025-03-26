@@ -2,20 +2,12 @@ import base64
 from typing import Any, Dict, Optional, Union
 
 from huggingface_hub.inference._common import _as_dict
-from huggingface_hub.inference._providers._common import (
-    BaseConversationalTask,
-    TaskProviderHelper,
-    filter_none,
-)
+from huggingface_hub.inference._providers._common import BaseConversationalTask, TaskProviderHelper, filter_none
 
 
 class HyperbolicTextToImageTask(TaskProviderHelper):
     def __init__(self):
-        super().__init__(
-            provider="hyperbolic",
-            base_url="https://api.hyperbolic.xyz",
-            task="text-to-image",
-        )
+        super().__init__(provider="hyperbolic", base_url="https://api.hyperbolic.xyz", task="text-to-image")
 
     def _prepare_route(self, mapped_model: str) -> str:
         return "/v1/images/generations"

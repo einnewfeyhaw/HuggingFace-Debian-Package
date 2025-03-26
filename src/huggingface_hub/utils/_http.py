@@ -124,9 +124,7 @@ BACKEND_FACTORY_T = Callable[[], requests.Session]
 _GLOBAL_BACKEND_FACTORY: BACKEND_FACTORY_T = _default_backend_factory
 
 
-def configure_http_backend(
-    backend_factory: BACKEND_FACTORY_T = _default_backend_factory,
-) -> None:
+def configure_http_backend(backend_factory: BACKEND_FACTORY_T = _default_backend_factory) -> None:
     """
     Configure the HTTP backend by providing a `backend_factory`. Any HTTP calls made by `huggingface_hub` will use a
     Session object instantiated by this factory. This can be useful if you are running your scripts in a specific
@@ -345,10 +343,7 @@ def fix_hf_endpoint_in_url(url: str, endpoint: Optional[str]) -> str:
     """
     endpoint = endpoint.rstrip("/") if endpoint else constants.ENDPOINT
     # check if a proxy has been set => if yes, update the returned URL to use the proxy
-    if endpoint not in (
-        constants._HF_DEFAULT_ENDPOINT,
-        constants._HF_DEFAULT_STAGING_ENDPOINT,
-    ):
+    if endpoint not in (constants._HF_DEFAULT_ENDPOINT, constants._HF_DEFAULT_STAGING_ENDPOINT):
         url = url.replace(constants._HF_DEFAULT_ENDPOINT, endpoint)
         url = url.replace(constants._HF_DEFAULT_STAGING_ENDPOINT, endpoint)
     return url
@@ -557,11 +552,7 @@ def _format(error_type: Type[HfHubHTTPError], custom_message: str, response: Res
             final_error_message += request_id_message
 
     # Return
-    return error_type(
-        final_error_message.strip(),
-        response=response,
-        server_message=server_message or None,
-    )
+    return error_type(final_error_message.strip(), response=response, server_message=server_message or None)
 
 
 def _curlify(request: requests.PreparedRequest) -> str:

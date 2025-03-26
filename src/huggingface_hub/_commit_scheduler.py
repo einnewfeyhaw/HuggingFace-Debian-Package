@@ -234,9 +234,7 @@ class CommitScheduler:
             # Filter with pattern + filter out unchanged files + retrieve current file size
             files_to_upload: List[_FileToUpload] = []
             for relpath in filter_repo_objects(
-                relpath_to_abspath.keys(),
-                allow_patterns=self.allow_patterns,
-                ignore_patterns=self.ignore_patterns,
+                relpath_to_abspath.keys(), allow_patterns=self.allow_patterns, ignore_patterns=self.ignore_patterns
             ):
                 local_path = relpath_to_abspath[relpath]
                 stat = local_path.stat()
@@ -317,11 +315,7 @@ class PartialFileIO(BytesIO):
         return self._size_limit
 
     def __getattribute__(self, name: str):
-        if name.startswith("_") or name in (
-            "read",
-            "tell",
-            "seek",
-        ):  # only 3 public methods supported
+        if name.startswith("_") or name in ("read", "tell", "seek"):  # only 3 public methods supported
             return super().__getattribute__(name)
         raise NotImplementedError(f"PartialFileIO does not support '{name}'.")
 

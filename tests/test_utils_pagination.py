@@ -63,11 +63,7 @@ class TestPagination(unittest.TestCase):
         # Real test: paginate over huggingface repos on Github
         # Use enumerate and stop after first page to avoid loading all repos
         for num, _ in enumerate(
-            paginate(
-                "https://api.github.com/orgs/huggingface/repos?limit=4",
-                params={},
-                headers={},
-            )
+            paginate("https://api.github.com/orgs/huggingface/repos?limit=4", params={}, headers={})
         ):
             if num == 6:
                 break

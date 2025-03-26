@@ -11,19 +11,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass, field
 from itertools import groupby
 from pathlib import Path, PurePosixPath
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    BinaryIO,
-    Dict,
-    Iterable,
-    Iterator,
-    List,
-    Literal,
-    Optional,
-    Tuple,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, BinaryIO, Dict, Iterable, Iterator, List, Literal, Optional, Tuple, Union
 
 from tqdm.contrib.concurrent import thread_map
 
@@ -446,12 +434,7 @@ def _upload_lfs_files(
     def _wrapped_lfs_upload(batch_action) -> None:
         try:
             operation = oid2addop[batch_action["oid"]]
-            lfs_upload(
-                operation=operation,
-                lfs_batch_action=batch_action,
-                headers=headers,
-                endpoint=endpoint,
-            )
+            lfs_upload(operation=operation, lfs_batch_action=batch_action, headers=headers, endpoint=endpoint)
         except Exception as exc:
             raise RuntimeError(f"Error while uploading '{operation.path_in_repo}' to the Hub.") from exc
 

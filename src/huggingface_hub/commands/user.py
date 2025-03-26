@@ -41,12 +41,7 @@ from typing import List, Optional
 from requests.exceptions import HTTPError
 
 from huggingface_hub.commands import BaseHuggingfaceCLICommand
-from huggingface_hub.constants import (
-    ENDPOINT,
-    REPO_TYPES,
-    REPO_TYPES_URL_PREFIXES,
-    SPACES_SDK_TYPES,
-)
+from huggingface_hub.constants import ENDPOINT, REPO_TYPES, REPO_TYPES_URL_PREFIXES, SPACES_SDK_TYPES
 from huggingface_hub.hf_api import HfApi
 
 from .._login import (  # noqa: F401 # for backward compatibility  # noqa: F401 # for backward compatibility

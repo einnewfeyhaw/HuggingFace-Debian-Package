@@ -15,17 +15,7 @@
 """Handle typing imports based on system compatibility."""
 
 import sys
-from typing import (
-    Any,
-    Callable,
-    List,
-    Literal,
-    Type,
-    TypeVar,
-    Union,
-    get_args,
-    get_origin,
-)
+from typing import Any, Callable, List, Literal, Type, TypeVar, Union, get_args, get_origin
 
 
 UNION_TYPES: List[Any] = [Union]
