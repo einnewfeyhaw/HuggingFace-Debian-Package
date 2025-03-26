@@ -222,13 +222,27 @@ class TestUploadCommand(unittest.TestCase):
             cache_path = cache_dir.absolute().as_posix()
             cmd = UploadCommand(
                 self.parser.parse_args(
-                    ["upload", "my-model", cache_path, ".", "--private", "--include", "*.json", "--delete", "*.json"]
+                    [
+                        "upload",
+                        "my-model",
+                        cache_path,
+                        ".",
+                        "--private",
+                        "--include",
+                        "*.json",
+                        "--delete",
+                        "*.json",
+                    ]
                 )
             )
             cmd.run()
 
             create_mock.assert_called_once_with(
-                repo_id="my-model", repo_type="model", exist_ok=True, private=True, space_sdk=None
+                repo_id="my-model",
+                repo_type="model",
+                exist_ok=True,
+                private=True,
+                space_sdk=None,
             )
             upload_mock.assert_called_once_with(
                 folder_path=cache_path,
@@ -253,13 +267,25 @@ class TestUploadCommand(unittest.TestCase):
             file_path.write_text("content")
             cmd = UploadCommand(
                 self.parser.parse_args(
-                    ["upload", "my-dataset", str(file_path), "logs/file.txt", "--repo-type", "dataset", "--create-pr"]
+                    [
+                        "upload",
+                        "my-dataset",
+                        str(file_path),
+                        "logs/file.txt",
+                        "--repo-type",
+                        "dataset",
+                        "--create-pr",
+                    ]
                 )
             )
             cmd.run()
 
             create_mock.assert_called_once_with(
-                repo_id="my-dataset", repo_type="dataset", exist_ok=True, private=False, space_sdk=None
+                repo_id="my-dataset",
+                repo_type="dataset",
+                exist_ok=True,
+                private=False,
+                space_sdk=None,
             )
             upload_mock.assert_called_once_with(
                 path_or_fileobj=str(file_path),
@@ -289,7 +315,11 @@ class TestUploadCommand(unittest.TestCase):
     @patch("huggingface_hub.commands.upload.HfApi.upload_file")
     @patch("huggingface_hub.commands.upload.HfApi.create_repo")
     def test_upload_file_with_revision_mock(
-        self, create_mock: Mock, upload_mock: Mock, repo_info_mock: Mock, create_branch_mock: Mock
+        self,
+        create_mock: Mock,
+        upload_mock: Mock,
+        repo_info_mock: Mock,
+        create_branch_mock: Mock,
     ) -> None:
         repo_info_mock.side_effect = RevisionNotFoundError("revision not found")
 
@@ -298,19 +328,31 @@ class TestUploadCommand(unittest.TestCase):
             file_path.write_text("content")
             cmd = UploadCommand(
                 self.parser.parse_args(
-                    ["upload", "my-model", str(file_path), "logs/file.txt", "--revision", "my-branch"]
+                    [
+                        "upload",
+                        "my-model",
+                        str(file_path),
+                        "logs/file.txt",
+                        "--revision",
+                        "my-branch",
+                    ]
                 )
             )
             cmd.run()
 
             # Revision specified => check that it exists
             repo_info_mock.assert_called_once_with(
-                repo_id=create_mock.return_value.repo_id, repo_type="model", revision="my-branch"
+                repo_id=create_mock.return_value.repo_id,
+                repo_type="model",
+                revision="my-branch",
             )
 
             # Revision does not exist => create it
             create_branch_mock.assert_called_once_with(
-                repo_id=create_mock.return_value.repo_id, repo_type="model", branch="my-branch", exist_ok=True
+                repo_id=create_mock.return_value.repo_id,
+                repo_type="model",
+                branch="my-branch",
+                exist_ok=True,
             )
 
     @patch("huggingface_hub.commands.upload.HfApi.repo_info")
@@ -324,7 +366,15 @@ class TestUploadCommand(unittest.TestCase):
             file_path.write_text("content")
             cmd = UploadCommand(
                 self.parser.parse_args(
-                    ["upload", "my-model", str(file_path), "logs/file.txt", "--revision", "my-branch", "--create-pr"]
+                    [
+                        "upload",
+                        "my-model",
+                        str(file_path),
+                        "logs/file.txt",
+                        "--revision",
+                        "my-branch",
+                        "--create-pr",
+                    ]
                 )
             )
             cmd.run()
@@ -546,7 +596,10 @@ class TestDownloadCommand(unittest.TestCase):
             repo_id="author/model",
             repo_type="model",
             revision=None,
-            allow_patterns=["README.md", "config.json"],  # `filenames` has priority over the patterns
+            allow_patterns=[
+                "README.md",
+                "config.json",
+            ],  # `filenames` has priority over the patterns
             ignore_patterns=None,  # cleaned up
             resume_download=True,
             force_download=True,

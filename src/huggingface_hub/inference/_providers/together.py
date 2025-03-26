@@ -52,7 +52,12 @@ class TogetherTextToImageTask(TogetherTask):
         if "guidance_scale" in parameters:
             parameters["guidance"] = parameters.pop("guidance_scale")
 
-        return {"prompt": inputs, "response_format": "base64", **parameters, "model": mapped_model}
+        return {
+            "prompt": inputs,
+            "response_format": "base64",
+            **parameters,
+            "model": mapped_model,
+        }
 
     def get_response(self, response: Union[bytes, Dict]) -> Any:
         response_dict = _as_dict(response)

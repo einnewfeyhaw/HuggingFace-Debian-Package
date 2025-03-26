@@ -120,7 +120,11 @@ class InferenceEndpoint:
 
     @classmethod
     def from_raw(
-        cls, raw: Dict, namespace: str, token: Union[str, bool, None] = None, api: Optional["HfApi"] = None
+        cls,
+        raw: Dict,
+        namespace: str,
+        token: Union[str, bool, None] = None,
+        api: Optional["HfApi"] = None,
     ) -> "InferenceEndpoint":
         """Initialize object from raw dictionary."""
         if api is None:
@@ -353,7 +357,10 @@ class InferenceEndpoint:
             [`InferenceEndpoint`]: the same Inference Endpoint, mutated in place with the latest data.
         """
         obj = self._api.resume_inference_endpoint(
-            name=self.name, namespace=self.namespace, running_ok=running_ok, token=self._token
+            name=self.name,
+            namespace=self.namespace,
+            running_ok=running_ok,
+            token=self._token,
         )  # type: ignore [arg-type]
         self.raw = obj.raw
         self._populate_from_raw()

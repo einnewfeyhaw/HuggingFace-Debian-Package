@@ -6,7 +6,11 @@ from typing import Iterable, Tuple, Union
 import pytest
 from pytest_mock import MockerFixture
 
-from huggingface_hub.errors import DDUFCorruptedFileError, DDUFExportError, DDUFInvalidEntryNameError
+from huggingface_hub.errors import (
+    DDUFCorruptedFileError,
+    DDUFExportError,
+    DDUFInvalidEntryNameError,
+)
 from huggingface_hub.serialization._dduf import (
     DDUFEntry,
     _load_content,
@@ -95,7 +99,10 @@ class TestUtils:
             _validate_dduf_structure(["not a dict"], {})  # content from 'model_index.json'
 
     def test_validate_dduf_structure_missing_folder(self):
-        with pytest.raises(DDUFCorruptedFileError, match="Missing required entry 'encoder' in 'model_index.json'."):
+        with pytest.raises(
+            DDUFCorruptedFileError,
+            match="Missing required entry 'encoder' in 'model_index.json'.",
+        ):
             _validate_dduf_structure({}, {"encoder/config.json", "encoder/model.safetensors"})
 
     def test_validate_dduf_structure_missing_config_file(self):
@@ -152,12 +159,18 @@ class TestExportEntries:
 
         return [
             ("model_index.json", str(tmp_path / "model_index.json")),  # string path
-            ("model.safetensors", tmp_path / "doesnt_have_to_be_same_name.safetensors"),  # pathlib path
+            (
+                "model.safetensors",
+                tmp_path / "doesnt_have_to_be_same_name.safetensors",
+            ),  # pathlib path
             ("hello.txt", b"hello world"),  # raw bytes
         ]
 
     def test_export_entries(
-        self, tmp_path: Path, dummy_entries: Iterable[Tuple[str, Union[str, Path, bytes]]], mocker: MockerFixture
+        self,
+        tmp_path: Path,
+        dummy_entries: Iterable[Tuple[str, Union[str, Path, bytes]]],
+        mocker: MockerFixture,
     ):
         mock = mocker.patch("huggingface_hub.serialization._dduf._validate_dduf_structure")
         export_entries_as_dduf(tmp_path / "dummy.dduf", dummy_entries)
@@ -165,7 +178,11 @@ class TestExportEntries:
 
         with zipfile.ZipFile(tmp_path / "dummy.dduf", "r") as archive:
             assert archive.compression == zipfile.ZIP_STORED  # uncompressed!
-            assert archive.namelist() == ["model_index.json", "model.safetensors", "hello.txt"]
+            assert archive.namelist() == [
+                "model_index.json",
+                "model.safetensors",
+                "hello.txt",
+            ]
             assert archive.read("model_index.json") == b'{"foo": "bar"}'
             assert archive.read("model.safetensors") == b"this is safetensors content"
             assert archive.read("hello.txt") == b"hello world"

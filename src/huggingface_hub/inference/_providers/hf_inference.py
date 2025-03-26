@@ -6,7 +6,12 @@ from typing import Any, Dict, Optional
 from huggingface_hub import constants
 from huggingface_hub.inference._common import _b64_encode, _open_as_binary
 from huggingface_hub.inference._providers._common import TaskProviderHelper, filter_none
-from huggingface_hub.utils import build_hf_headers, get_session, get_token, hf_raise_for_status
+from huggingface_hub.utils import (
+    build_hf_headers,
+    get_session,
+    get_token,
+    hf_raise_for_status,
+)
 
 
 class HFInferenceTask(TaskProviderHelper):
@@ -59,7 +64,11 @@ class HFInferenceBinaryInputTask(HFInferenceTask):
         return None
 
     def _prepare_payload_as_bytes(
-        self, inputs: Any, parameters: Dict, mapped_model: str, extra_payload: Optional[Dict]
+        self,
+        inputs: Any,
+        parameters: Dict,
+        mapped_model: str,
+        extra_payload: Optional[Dict],
     ) -> Optional[bytes]:
         parameters = filter_none({k: v for k, v in parameters.items() if v is not None})
         extra_payload = extra_payload or {}

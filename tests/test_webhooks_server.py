@@ -24,7 +24,10 @@ WEBHOOK_PAYLOAD_CREATE_DISCUSSION = {
         "name": "gpt2",
         "id": "621ffdc036468d709f17434d",
         "private": False,
-        "url": {"web": "https://huggingface.co/gpt2", "api": "https://huggingface.co/api/models/gpt2"},
+        "url": {
+            "web": "https://huggingface.co/gpt2",
+            "api": "https://huggingface.co/api/models/gpt2",
+        },
         "owner": {"id": "628b753283ef59b5be89e937"},
     },
     "discussion": {
@@ -239,14 +242,21 @@ class TestWebhooksServerRun(unittest.TestCase):
     def test_run_parse_payload(self):
         """Test that the payload is correctly parsed when running the app."""
         response = self.client.post(
-            "/webhooks/test_webhook", headers=self.HEADERS_VALID_SECRET, json=WEBHOOK_PAYLOAD_CREATE_DISCUSSION
+            "/webhooks/test_webhook",
+            headers=self.HEADERS_VALID_SECRET,
+            json=WEBHOOK_PAYLOAD_CREATE_DISCUSSION,
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"scope": "discussion"})
 
     def test_with_webhook_secret_should_succeed(self):
         """Test success if valid secret is sent."""
-        for path in ["async_with_request", "sync_with_request", "async_no_request", "sync_no_request"]:
+        for path in [
+            "async_with_request",
+            "sync_with_request",
+            "async_no_request",
+            "sync_no_request",
+        ]:
             with self.subTest(path):
                 response = self.client.post(f"/webhooks/{path}", headers=self.HEADERS_VALID_SECRET)
                 self.assertEqual(response.status_code, 200)
@@ -254,14 +264,24 @@ class TestWebhooksServerRun(unittest.TestCase):
 
     def test_no_webhook_secret_should_be_unauthorized(self):
         """Test failure if valid secret is sent."""
-        for path in ["async_with_request", "sync_with_request", "async_no_request", "sync_no_request"]:
+        for path in [
+            "async_with_request",
+            "sync_with_request",
+            "async_no_request",
+            "sync_no_request",
+        ]:
             with self.subTest(path):
                 response = self.client.post(f"/webhooks/{path}")
                 self.assertEqual(response.status_code, 401)
 
     def test_wrong_webhook_secret_should_be_forbidden(self):
         """Test failure if valid secret is sent."""
-        for path in ["async_with_request", "sync_with_request", "async_no_request", "sync_no_request"]:
+        for path in [
+            "async_with_request",
+            "sync_with_request",
+            "async_no_request",
+            "sync_no_request",
+        ]:
             with self.subTest(path):
                 response = self.client.post(f"/webhooks/{path}", headers=self.HEADERS_WRONG_SECRET)
                 self.assertEqual(response.status_code, 403)

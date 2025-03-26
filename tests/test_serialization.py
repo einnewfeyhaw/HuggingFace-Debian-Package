@@ -332,7 +332,9 @@ def test_save_torch_state_dict_sharded(tmp_path: Path, torch_state_dict: Dict[st
 
 
 def test_save_torch_state_dict_unsafe_not_sharded(
-    tmp_path: Path, caplog: pytest.LogCaptureFixture, torch_state_dict: Dict[str, "torch.Tensor"]
+    tmp_path: Path,
+    caplog: pytest.LogCaptureFixture,
+    torch_state_dict: Dict[str, "torch.Tensor"],
 ) -> None:
     """Save as pickle without sharding."""
     with caplog.at_level("WARNING"):
@@ -345,12 +347,17 @@ def test_save_torch_state_dict_unsafe_not_sharded(
 
 @pytest.mark.skipif(not is_wrapper_tensor_subclass_available(), reason="requires torch 2.1 or higher")
 def test_save_torch_state_dict_tensor_subclass_unsafe_not_sharded(
-    tmp_path: Path, caplog: pytest.LogCaptureFixture, torch_state_dict_tensor_subclass: Dict[str, "torch.Tensor"]
+    tmp_path: Path,
+    caplog: pytest.LogCaptureFixture,
+    torch_state_dict_tensor_subclass: Dict[str, "torch.Tensor"],
 ) -> None:
     """Save as pickle without sharding."""
     with caplog.at_level("WARNING"):
         save_torch_state_dict(
-            torch_state_dict_tensor_subclass, tmp_path, max_shard_size="1GB", safe_serialization=False
+            torch_state_dict_tensor_subclass,
+            tmp_path,
+            max_shard_size="1GB",
+            safe_serialization=False,
         )
     assert "we strongly recommend using safe serialization" in caplog.text
 
@@ -367,7 +374,10 @@ def test_save_torch_state_dict_shared_layers_tensor_subclass_unsafe_not_sharded(
     """Save as pickle without sharding."""
     with caplog.at_level("WARNING"):
         save_torch_state_dict(
-            torch_state_dict_shared_layers_tensor_subclass, tmp_path, max_shard_size="1GB", safe_serialization=False
+            torch_state_dict_shared_layers_tensor_subclass,
+            tmp_path,
+            max_shard_size="1GB",
+            safe_serialization=False,
         )
     assert "we strongly recommend using safe serialization" in caplog.text
 
@@ -376,7 +386,9 @@ def test_save_torch_state_dict_shared_layers_tensor_subclass_unsafe_not_sharded(
 
 
 def test_save_torch_state_dict_unsafe_sharded(
-    tmp_path: Path, caplog: pytest.LogCaptureFixture, torch_state_dict: Dict[str, "torch.Tensor"]
+    tmp_path: Path,
+    caplog: pytest.LogCaptureFixture,
+    torch_state_dict: Dict[str, "torch.Tensor"],
 ) -> None:
     """Save as pickle with sharding."""
     # Check logs
@@ -428,7 +440,12 @@ def test_save_torch_state_dict_shared_layers_sharded(
 ) -> None:
     from safetensors.torch import load_file
 
-    save_torch_state_dict(torch_state_dict_shared_layers, tmp_path, max_shard_size=2, safe_serialization=True)
+    save_torch_state_dict(
+        torch_state_dict_shared_layers,
+        tmp_path,
+        max_shard_size=2,
+        safe_serialization=True,
+    )
     index_file = tmp_path / "model.safetensors.index.json"
     assert index_file.is_file()
 
@@ -492,7 +509,8 @@ def test_save_torch_state_dict_discard_selected_not_sharded(
 
 
 def test_split_torch_state_dict_into_shards(
-    tmp_path: Path, torch_state_dict_shared_layers_tensor_subclass: Dict[str, "torch.Tensor"]
+    tmp_path: Path,
+    torch_state_dict_shared_layers_tensor_subclass: Dict[str, "torch.Tensor"],
 ):
     # the model size is 72, setting max_shard_size to 32 means we'll shard the file
     state_dict_split = split_torch_state_dict_into_shards(
@@ -511,7 +529,10 @@ def test_save_torch_state_dict_custom_filename(tmp_path: Path, torch_state_dict:
 
     # Sharded
     save_torch_state_dict(
-        torch_state_dict, tmp_path, filename_pattern="model.variant{suffix}.safetensors", max_shard_size=30
+        torch_state_dict,
+        tmp_path,
+        filename_pattern="model.variant{suffix}.safetensors",
+        max_shard_size=30,
     )
     assert (tmp_path / "model.variant.safetensors.index.json").is_file()
     assert (tmp_path / "model.variant-00001-of-00002.safetensors").is_file()
@@ -629,7 +650,9 @@ def test_load_sharded_state_dict(
 
 @requires("torch")
 def test_load_from_directory_not_sharded(
-    tmp_path: Path, torch_state_dict: Dict[str, "torch.Tensor"], dummy_model: "torch.nn.Module"
+    tmp_path: Path,
+    torch_state_dict: Dict[str, "torch.Tensor"],
+    dummy_model: "torch.nn.Module",
 ):
     import torch
 

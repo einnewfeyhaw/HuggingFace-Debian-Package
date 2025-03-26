@@ -39,7 +39,9 @@ HF_TRANSFER_CONCURRENCY = 100
 
 # Constants for serialization
 
-PYTORCH_WEIGHTS_FILE_PATTERN = "pytorch_model{suffix}.bin"  # Unsafe pickle: use safetensors instead
+PYTORCH_WEIGHTS_FILE_PATTERN = (
+    "pytorch_model{suffix}.bin"  # Unsafe pickle: use safetensors instead
+)
 SAFETENSORS_WEIGHTS_FILE_PATTERN = "model{suffix}.safetensors"
 TF2_WEIGHTS_FILE_PATTERN = "tf_model{suffix}.h5"
 
