@@ -8,7 +8,9 @@ from huggingface_hub.inference._providers._common import (
     BaseTextGenerationTask,
     recursive_merge,
 )
-from huggingface_hub.inference._providers.black_forest_labs import BlackForestLabsTextToImageTask
+from huggingface_hub.inference._providers.black_forest_labs import (
+    BlackForestLabsTextToImageTask,
+)
 from huggingface_hub.inference._providers.cohere import CohereConversationalTask
 from huggingface_hub.inference._providers.fal_ai import (
     FalAIAutomaticSpeechRecognitionTask,
@@ -16,7 +18,9 @@ from huggingface_hub.inference._providers.fal_ai import (
     FalAITextToSpeechTask,
     FalAITextToVideoTask,
 )
-from huggingface_hub.inference._providers.fireworks_ai import FireworksAIConversationalTask
+from huggingface_hub.inference._providers.fireworks_ai import (
+    FireworksAIConversationalTask,
+)
 from huggingface_hub.inference._providers.hf_inference import (
     HFInferenceBinaryInputTask,
     HFInferenceConversational,
@@ -31,7 +35,10 @@ from huggingface_hub.inference._providers.novita import (
     NovitaConversationalTask,
     NovitaTextGenerationTask,
 )
-from huggingface_hub.inference._providers.replicate import ReplicateTask, ReplicateTextToSpeechTask
+from huggingface_hub.inference._providers.replicate import (
+    ReplicateTask,
+    ReplicateTextToSpeechTask,
+)
 from huggingface_hub.inference._providers.sambanova import SambanovaConversationalTask
 from huggingface_hub.inference._providers.together import (
     TogetherTextToImageTask,
@@ -93,7 +100,10 @@ class TestBlackForestLabsProvider:
         mock_session = mocker.patch("huggingface_hub.inference._providers.black_forest_labs.get_session")
         mock_session.return_value.get.side_effect = [
             mocker.Mock(
-                json=lambda: {"status": "Ready", "result": {"sample": "https://example.com/image.jpg"}},
+                json=lambda: {
+                    "status": "Ready",
+                    "result": {"sample": "https://example.com/image.jpg"},
+                },
                 raise_for_status=lambda: None,
             ),
             mocker.Mock(content=b"image_bytes", raise_for_status=lambda: None),
@@ -105,7 +115,10 @@ class TestBlackForestLabsProvider:
         assert mock_session.return_value.get.call_count == 2
         mock_session.return_value.get.assert_has_calls(
             [
-                mocker.call("https://example.com/poll", headers={"Content-Type": "application/json"}),
+                mocker.call(
+                    "https://example.com/poll",
+                    headers={"Content-Type": "application/json"},
+                ),
                 mocker.call("https://example.com/image.jpg"),
             ]
         )
@@ -121,7 +134,9 @@ class TestCohereConversationalTask:
     def test_prepare_payload_as_dict(self):
         helper = CohereConversationalTask()
         payload = helper._prepare_payload_as_dict(
-            [{"role": "user", "content": "Hello!"}], {}, "CohereForAI/command-r7b-12-2024"
+            [{"role": "user", "content": "Hello!"}],
+            {},
+            "CohereForAI/command-r7b-12-2024",
         )
         assert payload == {
             "messages": [{"role": "user", "content": "Hello!"}],
@@ -211,7 +226,9 @@ class TestFireworksAIConversationalTask:
     def test_prepare_payload_as_dict(self):
         helper = FireworksAIConversationalTask()
         payload = helper._prepare_payload_as_dict(
-            [{"role": "user", "content": "Hello!"}], {}, "meta-llama/Llama-3.1-8B-Instruct"
+            [{"role": "user", "content": "Hello!"}],
+            {},
+            "meta-llama/Llama-3.1-8B-Instruct",
         )
         assert payload == {
             "messages": [{"role": "user", "content": "Hello!"}],
@@ -388,7 +405,9 @@ class TestHyperbolicProvider:
         """Test payload preparation for conversational task."""
         helper = HyperbolicTextGenerationTask("conversational")
         payload = helper._prepare_payload_as_dict(
-            [{"role": "user", "content": "Hello!"}], {"temperature": 0.7}, "meta-llama/Llama-3.2-3B-Instruct"
+            [{"role": "user", "content": "Hello!"}],
+            {"temperature": 0.7},
+            "meta-llama/Llama-3.2-3B-Instruct",
         )
         assert payload == {
             "messages": [{"role": "user", "content": "Hello!"}],
@@ -437,7 +456,12 @@ class TestNebiusProvider:
         helper = NebiusTextToImageTask()
         payload = helper._prepare_payload_as_dict(
             "a beautiful cat",
-            {"num_inference_steps": 10, "width": 512, "height": 512, "guidance_scale": 7.5},
+            {
+                "num_inference_steps": 10,
+                "width": 512,
+                "height": 512,
+                "guidance_scale": 7.5,
+            },
             "black-forest-labs/flux-schnell",
         )
         assert payload == {
@@ -490,13 +514,17 @@ class TestReplicateProvider:
 
         # No model version
         payload = helper._prepare_payload_as_dict(
-            "a beautiful cat", {"num_inference_steps": 20}, "black-forest-labs/FLUX.1-schnell"
+            "a beautiful cat",
+            {"num_inference_steps": 20},
+            "black-forest-labs/FLUX.1-schnell",
         )
         assert payload == {"input": {"prompt": "a beautiful cat", "num_inference_steps": 20}}
 
         # Model with specific version
         payload = helper._prepare_payload_as_dict(
-            "a beautiful cat", {"num_inference_steps": 20}, "black-forest-labs/FLUX.1-schnell:1944af04d098ef"
+            "a beautiful cat",
+            {"num_inference_steps": 20},
+            "black-forest-labs/FLUX.1-schnell:1944af04d098ef",
         )
         assert payload == {
             "input": {"prompt": "a beautiful cat", "num_inference_steps": 20},
@@ -506,7 +534,9 @@ class TestReplicateProvider:
     def test_text_to_speech_payload(self):
         helper = ReplicateTextToSpeechTask()
         payload = helper._prepare_payload_as_dict(
-            "Hello world", {}, "hexgrad/Kokoro-82M:f559560eb822dc509045f3921a1921234918b91739db4bf3daab2169b71c7a13"
+            "Hello world",
+            {},
+            "hexgrad/Kokoro-82M:f559560eb822dc509045f3921a1921234918b91739db4bf3daab2169b71c7a13",
         )
         assert payload == {
             "input": {"text": "Hello world"},
@@ -544,7 +574,12 @@ class TestTogetherProvider:
         helper = TogetherTextToImageTask()
         payload = helper._prepare_payload_as_dict(
             "a beautiful cat",
-            {"num_inference_steps": 10, "guidance_scale": 1, "width": 512, "height": 512},
+            {
+                "num_inference_steps": 10,
+                "guidance_scale": 1,
+                "width": 512,
+                "height": 512,
+            },
             "black-forest-labs/FLUX.1-schnell",
         )
         assert payload == {

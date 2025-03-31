@@ -173,7 +173,9 @@ def test_from_raw_initialization():
 def test_from_raw_with_hf_api():
     """Test that the HfApi is correctly passed to the InferenceEndpoint."""
     endpoint = InferenceEndpoint.from_raw(
-        MOCK_INITIALIZING, namespace="foo", api=HfApi(library_name="my-library", token="hf_***")
+        MOCK_INITIALIZING,
+        namespace="foo",
+        api=HfApi(library_name="my-library", token="hf_***"),
     )
     assert endpoint._api.library_name == "my-library"
     assert endpoint._api.token == "hf_***"

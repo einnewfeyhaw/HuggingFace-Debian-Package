@@ -7,12 +7,18 @@ import pytest
 from pytest import CaptureFixture, LogCaptureFixture
 
 from huggingface_hub import constants
-from huggingface_hub.commands.user import AuthListCommand, AuthSwitchCommand, LoginCommand, LogoutCommand
+from huggingface_hub.commands.user import (
+    AuthListCommand,
+    AuthSwitchCommand,
+    LoginCommand,
+    LogoutCommand,
+)
 
 from .testing_constants import ENDPOINT_STAGING
 
 
 # fixtures & constants
+
 
 MOCK_TOKEN = "hf_1234"
 

@@ -29,7 +29,12 @@ from urllib.parse import quote
 
 from . import constants
 from ._commit_api import CommitOperationAdd, UploadInfo, _fetch_upload_modes
-from ._local_folder import LocalUploadFileMetadata, LocalUploadFilePaths, get_local_upload_paths, read_upload_metadata
+from ._local_folder import (
+    LocalUploadFileMetadata,
+    LocalUploadFilePaths,
+    get_local_upload_paths,
+    read_upload_metadata,
+)
 from .constants import DEFAULT_REVISION, REPO_TYPES
 from .utils import DEFAULT_IGNORE_PATTERNS, filter_repo_objects, tqdm
 from .utils._cache_manager import _format_size
@@ -309,7 +314,13 @@ def _worker_job(
 
         elif job == WorkerJob.GET_UPLOAD_MODE:
             try:
-                _get_upload_mode(items, api=api, repo_id=repo_id, repo_type=repo_type, revision=revision)
+                _get_upload_mode(
+                    items,
+                    api=api,
+                    repo_id=repo_id,
+                    repo_type=repo_type,
+                    revision=revision,
+                )
             except KeyboardInterrupt:
                 raise
             except Exception as e:
@@ -338,7 +349,13 @@ def _worker_job(
         elif job == WorkerJob.PREUPLOAD_LFS:
             item = items[0]  # single item
             try:
-                _preupload_lfs(item, api=api, repo_id=repo_id, repo_type=repo_type, revision=revision)
+                _preupload_lfs(
+                    item,
+                    api=api,
+                    repo_id=repo_id,
+                    repo_type=repo_type,
+                    revision=revision,
+                )
                 status.queue_commit.put(item)
             except KeyboardInterrupt:
                 raise
@@ -352,7 +369,13 @@ def _worker_job(
 
         elif job == WorkerJob.COMMIT:
             try:
-                _commit(items, api=api, repo_id=repo_id, repo_type=repo_type, revision=revision)
+                _commit(
+                    items,
+                    api=api,
+                    repo_id=repo_id,
+                    repo_type=repo_type,
+                    revision=revision,
+                )
             except KeyboardInterrupt:
                 raise
             except Exception as e:
@@ -370,7 +393,9 @@ def _worker_job(
                 status.nb_workers_waiting -= 1
 
 
-def _determine_next_job(status: LargeUploadStatus) -> Optional[Tuple[WorkerJob, List[JOB_ITEM_T]]]:
+def _determine_next_job(
+    status: LargeUploadStatus,
+) -> Optional[Tuple[WorkerJob, List[JOB_ITEM_T]]]:
     with status.lock:
         # 1. Commit if more than 5 minutes since last commit attempt (and at least 1 file)
         if (

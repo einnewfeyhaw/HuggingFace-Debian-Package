@@ -284,7 +284,11 @@ class ReferenceUpdates(unittest.TestCase):
         repo_id = self._api.create_repo(repo_name(), exist_ok=True).repo_id
 
         try:
-            self._api.upload_file(path_or_fileobj=BytesIO(b"Some string"), path_in_repo="file.txt", repo_id=repo_id)
+            self._api.upload_file(
+                path_or_fileobj=BytesIO(b"Some string"),
+                path_in_repo="file.txt",
+                repo_id=repo_id,
+            )
 
             with SoftTemporaryDirectory() as cache:
                 hf_hub_download(repo_id, "file.txt", cache_dir=cache)

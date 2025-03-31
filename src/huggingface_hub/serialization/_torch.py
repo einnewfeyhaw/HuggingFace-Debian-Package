@@ -20,7 +20,18 @@ import re
 from collections import defaultdict, namedtuple
 from functools import lru_cache
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, NamedTuple, Optional, Set, Tuple, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Iterable,
+    List,
+    NamedTuple,
+    Optional,
+    Set,
+    Tuple,
+    Union,
+)
 
 from packaging import version
 
@@ -551,7 +562,8 @@ def _load_sharded_checkpoint(
     loaded_keys = set(index["weight_map"].keys())
     model_keys = set(model.state_dict().keys())
     return _IncompatibleKeys(
-        missing_keys=list(model_keys - loaded_keys), unexpected_keys=list(loaded_keys - model_keys)
+        missing_keys=list(model_keys - loaded_keys),
+        unexpected_keys=list(loaded_keys - model_keys),
     )
 
 
@@ -732,7 +744,9 @@ def _get_unique_id(tensor: "torch.Tensor") -> Union[int, Tuple[Any, ...]]:
     return unique_id
 
 
-def get_torch_storage_id(tensor: "torch.Tensor") -> Optional[Tuple["torch.device", Union[int, Tuple[Any, ...]], int]]:
+def get_torch_storage_id(
+    tensor: "torch.Tensor",
+) -> Optional[Tuple["torch.device", Union[int, Tuple[Any, ...]], int]]:
     """
     Return unique identifier to a tensor storage.
 

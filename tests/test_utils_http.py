@@ -301,13 +301,29 @@ def _is_uuid(string: str) -> bool:
     ("base_url", "endpoint", "expected_url"),
     [
         # Staging url => unchanged
-        ("https://hub-ci.huggingface.co/resolve/...", None, "https://hub-ci.huggingface.co/resolve/..."),
+        (
+            "https://hub-ci.huggingface.co/resolve/...",
+            None,
+            "https://hub-ci.huggingface.co/resolve/...",
+        ),
         # Prod url => unchanged
-        ("https://huggingface.co/resolve/...", None, "https://huggingface.co/resolve/..."),
+        (
+            "https://huggingface.co/resolve/...",
+            None,
+            "https://huggingface.co/resolve/...",
+        ),
         # Custom endpoint + staging url => fixed
-        ("https://hub-ci.huggingface.co/api/models", "https://mirror.co", "https://mirror.co/api/models"),
+        (
+            "https://hub-ci.huggingface.co/api/models",
+            "https://mirror.co",
+            "https://mirror.co/api/models",
+        ),
         # Custom endpoint + prod url => fixed
-        ("https://huggingface.co/api/models", "https://mirror.co", "https://mirror.co/api/models"),
+        (
+            "https://huggingface.co/api/models",
+            "https://mirror.co",
+            "https://mirror.co/api/models",
+        ),
     ],
 )
 def test_fix_hf_endpoint_in_url(base_url: str, endpoint: Optional[str], expected_url: str) -> None:

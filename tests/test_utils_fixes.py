@@ -32,7 +32,10 @@ class TestTemporaryDirectory(unittest.TestCase):
 
 class TestWeakFileLock:
     def test_lock_log_every(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+        self,
+        tmp_path: Path,
+        monkeypatch: pytest.MonkeyPatch,
+        caplog: pytest.LogCaptureFixture,
     ) -> None:
         monkeypatch.setattr("huggingface_hub.constants.FILELOCK_LOG_EVERY_SECONDS", 0.1)
         lock_file = tmp_path / ".lock"

@@ -5,8 +5,13 @@ from typing import List, Optional, Union, get_args, get_origin
 import pytest
 
 import huggingface_hub.inference._generated.types as types
-from huggingface_hub.inference._generated.types import AutomaticSpeechRecognitionParameters
-from huggingface_hub.inference._generated.types.base import BaseInferenceType, dataclass_with_extra
+from huggingface_hub.inference._generated.types import (
+    AutomaticSpeechRecognitionParameters,
+)
+from huggingface_hub.inference._generated.types.base import (
+    BaseInferenceType,
+    dataclass_with_extra,
+)
 
 
 @dataclass_with_extra
@@ -144,8 +149,8 @@ def test_other_fields_are_set():
     assert instance.items[0].another_extra == "value"
     assert str(instance.items[0]) == "DummyType(foo=42, bar='baz', another_extra='value')"  # extra field always last
     assert (
-        repr(instance)  # works both with __str__ and __repr__
-        == (
+        repr(instance)
+        == (  # works both with __str__ and __repr__
             "DummyNestedType("
             "item=DummyType(foo=42, bar='baz'), "
             "items=[DummyType(foo=42, bar='baz', another_extra='value')], "

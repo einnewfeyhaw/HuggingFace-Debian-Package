@@ -66,10 +66,14 @@ class UploadCommand(BaseHuggingfaceCLICommand):
     def register_subcommand(parser: _SubParsersAction):
         upload_parser = parser.add_parser("upload", help="Upload a file or a folder to a repo on the Hub")
         upload_parser.add_argument(
-            "repo_id", type=str, help="The ID of the repo to upload to (e.g. `username/repo-name`)."
+            "repo_id",
+            type=str,
+            help="The ID of the repo to upload to (e.g. `username/repo-name`).",
         )
         upload_parser.add_argument(
-            "local_path", nargs="?", help="Local path to the file or folder to upload. Defaults to current directory."
+            "local_path",
+            nargs="?",
+            help="Local path to the file or folder to upload. Defaults to current directory.",
         )
         upload_parser.add_argument(
             "path_in_repo",
@@ -98,9 +102,17 @@ class UploadCommand(BaseHuggingfaceCLICommand):
                 " exists."
             ),
         )
-        upload_parser.add_argument("--include", nargs="*", type=str, help="Glob patterns to match files to upload.")
         upload_parser.add_argument(
-            "--exclude", nargs="*", type=str, help="Glob patterns to exclude from files to upload."
+            "--include",
+            nargs="*",
+            type=str,
+            help="Glob patterns to match files to upload.",
+        )
+        upload_parser.add_argument(
+            "--exclude",
+            nargs="*",
+            type=str,
+            help="Glob patterns to exclude from files to upload.",
         )
         upload_parser.add_argument(
             "--delete",
@@ -109,11 +121,19 @@ class UploadCommand(BaseHuggingfaceCLICommand):
             help="Glob patterns for file to be deleted from the repo while committing.",
         )
         upload_parser.add_argument(
-            "--commit-message", type=str, help="The summary / title / first line of the generated commit."
+            "--commit-message",
+            type=str,
+            help="The summary / title / first line of the generated commit.",
         )
-        upload_parser.add_argument("--commit-description", type=str, help="The description of the generated commit.")
         upload_parser.add_argument(
-            "--create-pr", action="store_true", help="Whether to upload content as a new Pull Request."
+            "--commit-description",
+            type=str,
+            help="The description of the generated commit.",
+        )
+        upload_parser.add_argument(
+            "--create-pr",
+            action="store_true",
+            help="Whether to upload content as a new Pull Request.",
         )
         upload_parser.add_argument(
             "--every",
@@ -121,7 +141,9 @@ class UploadCommand(BaseHuggingfaceCLICommand):
             help="If set, a background job is scheduled to create commits every `every` minutes.",
         )
         upload_parser.add_argument(
-            "--token", type=str, help="A User Access Token generated from https://huggingface.co/settings/tokens"
+            "--token",
+            type=str,
+            help="A User Access Token generated from https://huggingface.co/settings/tokens",
         )
         upload_parser.add_argument(
             "--quiet",
@@ -266,7 +288,12 @@ class UploadCommand(BaseHuggingfaceCLICommand):
                 self.api.repo_info(repo_id=repo_id, repo_type=self.repo_type, revision=self.revision)
             except RevisionNotFoundError:
                 logger.info(f"Branch '{self.revision}' not found. Creating it...")
-                self.api.create_branch(repo_id=repo_id, repo_type=self.repo_type, branch=self.revision, exist_ok=True)
+                self.api.create_branch(
+                    repo_id=repo_id,
+                    repo_type=self.repo_type,
+                    branch=self.revision,
+                    exist_ok=True,
+                )
                 # ^ `exist_ok=True` to avoid race concurrency issues
 
         # File-based upload

@@ -182,7 +182,10 @@ class MethodArgumentsCollector(cst.CSTVisitor):
             if param.name.value == "self" or param.name.value in CORE_PARAMETERS:
                 continue
             param_type = cst.Module([]).code_for_node(param.annotation.annotation) if param.annotation else "Any"
-            self.parameters[param.name.value] = {"type": param_type, "docstring": param_docs.get(param.name.value, "")}
+            self.parameters[param.name.value] = {
+                "type": param_type,
+                "docstring": param_docs.get(param.name.value, ""),
+            }
 
     def _extract_docstring(self, node: cst.FunctionDef) -> str:
         """Extract docstring from function node."""
@@ -208,7 +211,12 @@ class MethodArgumentsCollector(cst.CSTVisitor):
         current_desc = []
         for line in lines[args_idx + 1 :]:
             stripped_line = line.strip()
-            if not stripped_line or stripped_line.lower() in ("returns:", "raises:", "example:", "examples:"):
+            if not stripped_line or stripped_line.lower() in (
+                "returns:",
+                "raises:",
+                "example:",
+                "examples:",
+            ):
                 break
 
             if stripped_line.endswith(":"):  # Parameter line
@@ -350,7 +358,10 @@ class UpdateParameters(cst.CSTTransformer):
         # Split the docstring into lines for processing
         docstring_lines = docstring.split("\n")
         # Find or create the "Args:" section and compute indentation levels
-        args_index = next((i for i, line in enumerate(docstring_lines) if line.strip().lower() == "args:"), None)
+        args_index = next(
+            (i for i, line in enumerate(docstring_lines) if line.strip().lower() == "args:"),
+            None,
+        )
         if args_index is None:
             # If 'Args:' section is not found, insert it before 'Returns:' or at the end
             insertion_index = next(
@@ -429,7 +440,12 @@ class UpdateParameters(cst.CSTTransformer):
                 # Skip empty lines
                 i += 1
                 continue
-            if stripped_line.lower() in ("returns:", "raises:", "example:", "examples:"):
+            if stripped_line.lower() in (
+                "returns:",
+                "raises:",
+                "example:",
+                "examples:",
+            ):
                 # Stop processing if another section starts
                 break
             if stripped_line.endswith(":"):
@@ -487,7 +503,12 @@ class UpdateParameters(cst.CSTTransformer):
                     empty_line_index = insertion_index
                 insertion_index += 1
                 continue
-            if stripped_line.lower() in ("returns:", "raises:", "example:", "examples:"):
+            if stripped_line.lower() in (
+                "returns:",
+                "raises:",
+                "example:",
+                "examples:",
+            ):
                 break
             empty_line_index = None  # Reset if we find more content
             if stripped_line.endswith(":") and not line.startswith(desc_indent.strip()):

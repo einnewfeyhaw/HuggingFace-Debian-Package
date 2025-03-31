@@ -452,7 +452,11 @@ class RepocardMetadataUpdateTest(unittest.TestCase):
 
     def test_update_without_existing_name(self):
         # delete existing metadata
-        self.api.upload_file(path_or_fileobj="# Test".encode(), repo_id=self.repo_id, path_in_repo="README.md")
+        self.api.upload_file(
+            path_or_fileobj="# Test".encode(),
+            repo_id=self.repo_id,
+            path_in_repo="README.md",
+        )
 
         new_metadata = copy.deepcopy(self.existing_metadata)
         new_metadata["model-index"][0].pop("name")
@@ -865,7 +869,10 @@ class ModelCardTest(TestCaseWithHfApi):
     def test_preserve_order_load_save(self):
         model_card = ModelCard(DUMMY_MODELCARD)
         model_card.data.license = "test"
-        self.assertEqual(model_card.content, "---\nlicense: test\ndatasets:\n- foo\n- bar\n---\n\nHello\n")
+        self.assertEqual(
+            model_card.content,
+            "---\nlicense: test\ndatasets:\n- foo\n- bar\n---\n\nHello\n",
+        )
 
 
 class DatasetCardTest(TestCaseWithHfApi):
@@ -934,7 +941,10 @@ class DatasetCardTest(TestCaseWithHfApi):
         self.assertTrue(card.text.strip().startswith("# Dataset Card for My Cool Dataset"))
         self.assertIsInstance(card, DatasetCard)
 
-        matches = re.findall(r"Repository:\*\* https://github\.com/huggingface/huggingface_hub", str(card))
+        matches = re.findall(
+            r"Repository:\*\* https://github\.com/huggingface/huggingface_hub",
+            str(card),
+        )
         self.assertEqual(matches[0], "Repository:** https://github.com/huggingface/huggingface_hub")
 
     @require_jinja

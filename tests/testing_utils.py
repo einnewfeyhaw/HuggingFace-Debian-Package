@@ -44,7 +44,9 @@ DUMMY_RENAMED_NEW_MODEL_ID = "hf-internal-testing/dummy-renamed"
 SAMPLE_DATASET_IDENTIFIER = "lhoestq/custom_squad"
 # Example dataset ids
 DUMMY_DATASET_ID = "gaia-benchmark/GAIA"
-DUMMY_DATASET_ID_REVISION_ONE_SPECIFIC_COMMIT = "c603981e170e9e333934a39781d2ae3a2677e81f"  # on branch "test-branch"
+DUMMY_DATASET_ID_REVISION_ONE_SPECIFIC_COMMIT = (
+    "c603981e170e9e333934a39781d2ae3a2677e81f"  # on branch "test-branch"
+)
 
 YES = ("y", "yes", "t", "true", "on", "1")
 NO = ("n", "no", "f", "false", "off", "0")
@@ -212,7 +214,10 @@ def rmtree_with_retry(path: Union[str, Path]) -> None:
 
 
 def with_production_testing(func):
-    file_download = patch("huggingface_hub.file_download.HUGGINGFACE_CO_URL_TEMPLATE", ENDPOINT_PRODUCTION_URL_SCHEME)
+    file_download = patch(
+        "huggingface_hub.file_download.HUGGINGFACE_CO_URL_TEMPLATE",
+        ENDPOINT_PRODUCTION_URL_SCHEME,
+    )
     hf_api = patch("huggingface_hub.constants.ENDPOINT", ENDPOINT_PRODUCTION)
     return hf_api(file_download(func))
 
@@ -392,9 +397,9 @@ def handle_injection_in_test(fn: Callable) -> Callable:
             if name == "self":
                 continue
             assert parameter.annotation is Mock
-            assert name in mocks, (
-                f"Mock `{name}` not found for test `{fn.__name__}`. Available: {', '.join(sorted(mocks.keys()))}"
-            )
+            assert (
+                name in mocks
+            ), f"Mock `{name}` not found for test `{fn.__name__}`. Available: {', '.join(sorted(mocks.keys()))}"
             new_kwargs[name] = mocks[name]
 
         # Run test only with a subset of mocks
@@ -437,7 +442,9 @@ def use_tmp_repo(repo_type: str = "model") -> Callable[[T], T]:
                 create_repo_kwargs["space_sdk"] = "gradio"
 
             repo_url = self._api.create_repo(
-                repo_id=repo_name(prefix=repo_type), repo_type=repo_type, **create_repo_kwargs
+                repo_id=repo_name(prefix=repo_type),
+                repo_type=repo_type,
+                **create_repo_kwargs,
             )
             try:
                 return test_fn(*args, **kwargs, repo_url=repo_url)
