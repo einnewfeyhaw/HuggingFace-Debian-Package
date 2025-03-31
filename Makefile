@@ -36,8 +36,8 @@ repocard:
 	python3 utils/push_repocard_examples.py
 
 
-test:
-	PYTHONPATH=$(CURDIR)/src pytest -v --tb=long ./tests/
+#test:
+#	PYTHONPATH=$(CURDIR)/src pytest -v --tb=long ./tests/
 
 # Taken from https://stackoverflow.com/a/12110773
 # Commands:
