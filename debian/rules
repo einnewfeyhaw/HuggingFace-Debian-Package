@@ -19,7 +19,11 @@ override_dh_auto_test:
 %:
 	dh $@
 
+override_dh_auto_build:
+	python3 setup.py build
 
+override_dh_auto_install:
+	python3 setup.py install --root=$(CURDIR)/debian/python3-huggingface-hub --prefix=/usr
 # dh_make generated override targets.
 # This is an example for Cmake (see <https://bugs.debian.org/641051>).
 #override_dh_auto_configure:

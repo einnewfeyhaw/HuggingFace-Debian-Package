@@ -1,5 +1,5 @@
 Source: python3-huggingface-hub
-Section: python3
+Section: python
 Priority: optional
 Maintainer: anudeep <f20212776@goa.bits-pilani.ac.in>
 Rules-Requires-Root: no
@@ -27,11 +27,16 @@ Homepage: https://github.com/huggingface/huggingface_hub
 #Vcs-Browser: https://salsa.debian.org/debian/python3-huggingface-hub
 #Vcs-Git: https://salsa.debian.org/debian/python3-huggingface-hub.git
 
+
 Package: python3-huggingface-hub
 Architecture: any
-Depends:
- ${shlibs:Depends},
- ${misc:Depends},
-Description: Python library for HuggingFace Hub 
- The huggingface-hub library provides access to the HuggingFace Hub, 
+Depends: 
+ python3-requests (>=2.20.0),
+ python3-packaging (>=20.9),
+ python3-filelock (>=3.0.0),
+ python3-regex (>=2022.1.18),
+ python3-typing-extensions (>=4.2.0),
+ python3-importlib-metadata (>=4.13.0), 
+Description: Python library for HuggingFace Hub
+ The huggingface-hub library provides access to the HuggingFace Hub,
  allowing users to download and upload models,datasets and more.
