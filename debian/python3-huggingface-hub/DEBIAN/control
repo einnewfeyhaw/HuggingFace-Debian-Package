@@ -1,0 +1,13 @@
+Package: python3-huggingface-hub
+Source: huggingface-hub
+Version: 0.29.3-1
+Architecture: arm64
+Maintainer: anudeep <f20212776@goa.bits-pilani.ac.in>
+Installed-Size: 1913
+Depends: python3-filelock (>= 3.0.0), python3-fsspec, python3-packaging (>= 20.9), python3-requests (>= 2.20.0), python3-tqdm, python3-typing-extensions (>= 4.2.0), python3-yaml, python3:any, python3-regex (>= 2022.1.18), python3-importlib-metadata (>= 4.13.0)
+Section: python
+Priority: optional
+Homepage: https://github.com/huggingface/huggingface_hub
+Description: Python library for HuggingFace Hub
+ The huggingface-hub library provides access to the HuggingFace Hub,
+ allowing users to download and upload models,datasets and more.
